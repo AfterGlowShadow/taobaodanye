@@ -1,0 +1,11 @@
+
+
+
+FTP账号资料
+用户：jf_uujia_net
+密码：S6iGWKdba3PGDDxb
+
+数据库账号资料
+数据库名：jf_uujia_net
+用户：jf_uujia_net
+密码：ReRr3aiAR3TAHKXT

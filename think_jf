@@ -1,0 +1,58 @@
+#!/usr/bin/env php
+<?php
+// +----------------------------------------------------------------------
+// | ThinkPHP [ WE CAN DO IT JUST THINK ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2006-2018 http://thinkphp.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: yunwuxin <448901948@qq.com>
+// +----------------------------------------------------------------------
+
+namespace think;
+
+define('ENTR_PATH', '');
+define('ROOT_PATH', __DIR__ . '/../');
+define('DS', DIRECTORY_SEPARATOR);
+define('APP_PATH', __DIR__ . '/../application/');
+define('ADDON_ROUTE', '/app/');
+define('EXTEND_PATH', ROOT_PATH . 'extend/');
+
+define('PUBLIC_PATH', ROOT_PATH . 'public/');
+define('LIB_PATH', __DIR__ . '/../application/');
+define('LIB_SYS_PATH', LIB_PATH . '/sys/');
+define('LIB_APP_PATH', LIB_PATH . '/app/');
+define('LIB_OTH_PATH', LIB_PATH . '/oth/');
+define('APP_TAG', 'jf');
+define('APP_TAG_PATH', LIB_APP_PATH . APP_TAG . '/');
+define('COM_PATH', __DIR__ . '/../application/sys/com/');
+
+define('LIB_DIR_NAME', 'application');
+//define('MP_DIR_NAME', 'addons');
+
+define('DATEBASE_CONFIG', [
+	// 数据库类型
+    'type'            => 'mysql',
+    // 服务器地址
+    'hostname'        => '59.110.217.60',
+    // 数据库名
+    'database'        => 'jf_uujia_net',
+    // 用户名
+    'username'        => 'jf_uujia_net',
+    // 密码
+    'password'        => 'ReRr3aiAR3TAHKXT',
+    // 端口
+    'hostport'        => '3306',
+    // 数据库表前缀
+    'prefix'          => 'jf_',
+]);
+
+// 加载基础文件
+require __DIR__ . '/thinkphp/base.php';
+
+// 应用初始化
+Container::get('app')->path(__DIR__ . '/application/')->initialize();
+
+// 控制台初始化
+Console::init();

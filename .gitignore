@@ -1,0 +1,13 @@
+/.idea
+/.vscode
+
+1*.log
+
+runtime
+.env
+*.7z
+*.rar
+*.zip
+*.mp4
+*.pdf
+/public/uploads/
