@@ -8,6 +8,7 @@
 namespace app\app\tb\Attribute\admin\controller\logic;
 
 use app\app\tb\Attribute\common\model\Classify;
+use app\app\tb\Attribute\common\model\Specs;
 use app\sys\com\base\common\v1\controller\admin\ControllerCommon;
 use Exception;
 
@@ -96,6 +97,17 @@ class Classifys extends ControllerCommon {
         if (!is_return_ok($re)) {
             return return_json($re);
         }
+        foreach ($re['result']['data'] as $key =>$value){
+            $where=[];
+            $specsM=new Specs();
+            $where[]=['classifyid','=',$value['id']];
+            $res=$specsM->getList($where);
+            if(is_return_ok($res)&&count($res['result']['data'])>0){
+                $re['result']['data'][$key]['specs']=$res['result']['data'];
+            }else{
+                $re['result']['data'][$key]['specs']=[];
+            }
+        }
 
         $reData = get_return_data($re);
         return rjData($reData);
@@ -127,14 +139,14 @@ class Classifys extends ControllerCommon {
         $_link = isset($this->_buf['getItemById']['link']) ? $this->_buf['getItemById']['link'] : false;
         $_join = isset($this->_buf['getItemById']['join']) ? $this->_buf['getItemById']['join'] : [];
         $_param = isset($this->_buf['getItemById']['param']) ? $this->_buf['getItemById']['param'] : [];
-        $re = $m->getItemById($id, $_field, $_link, $_join, $_param);
+        $re = $m->getItemByIdM($id, $_field, $_link, $_join, $_param);
         if (!is_return_ok($re)) {
             return return_json($re);
         }
 
-        $reData = get_return_data($re);
+//        $reData = get_return_data($re);
 
-        return rjData($reData);
+        return rjData($re);
     }
 
 	/**
@@ -161,16 +173,33 @@ class Classifys extends ControllerCommon {
 		$name = isset($param['name']) ? $param['name'] : '';
 		$pga = isset($param['pga']) ? $param['pga'] : 0;
 		$level = isset($param['level']) ? $param['level'] : 0;
-		
+		$specs = isset($param['specs']) ? json_decode($param['specs'],true) : '';
 		$_data = [];
 		$_data['name'] = $name;
 		$_data['pga'] = $pga;
 		$_data['level'] = $level;
+		$this->startTrans();
 		$re = $m->add($_data);
-		if (!is_return_ok($re)) {
-			return return_json($re);
-		}
-		return return_json($re);
+        if (!is_return_ok($re)) {
+            $this->rollback();
+            return return_json($re);
+        }else{
+            if($specs!=""){
+
+                $specsM=new Specs();
+                $res=$specsM->BulkAdd($specs,'classifyid',$re['result']['id']);
+                if($res){
+                    $this->commit();
+                    return return_json($re);
+                }else{
+                    $this->rollback();
+                    return return_json($re);
+                }
+            }else{
+                $this->commit();
+                return return_json($re);
+            }
+        }
 	}
 
 	

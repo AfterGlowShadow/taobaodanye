@@ -150,7 +150,6 @@ class Specss extends ControllerCommon {
 	 * 
 	 * name				规格名称
 	 * classifyid		所属分类id
-	 * classify			所属分类
 	 * @return mixed|string
 	 */
 	public function add() {
@@ -160,12 +159,11 @@ class Specss extends ControllerCommon {
 		
 		$name = isset($param['name']) ? $param['name'] : '';
 		$classifyid = isset($param['classifyid']) ? $param['classifyid'] : 0;
-		$classify = isset($param['classify']) ? $param['classify'] : 0;
-		
+        $userid = isset($param['userid']) ? $param['userid'] : 0;
 		$_data = [];
 		$_data['name'] = $name;
 		$_data['classifyid'] = $classifyid;
-		$_data['classify'] = $classify;
+		$_data['userid'] = $userid;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -199,12 +197,12 @@ class Specss extends ControllerCommon {
 		$id = $param['id'];
 		$name = isset($param['name']) ? $param['name'] : '';
 		$classifyid = isset($param['classifyid']) ? $param['classifyid'] : 0;
-		$classify = isset($param['classify']) ? $param['classify'] : 0;
+        $userid = isset($param['userid']) ? $param['userid'] : 0;
 		
 		$_data = [];
 		isset($param['name']) && $_data['name'] = $name;
 		isset($param['classifyid']) && $_data['classifyid'] = $classifyid;
-		isset($param['classify']) && $_data['classify'] = $classify;
+		isset($param['userid']) && $_data['userid'] = $userid;
 		$re = $m->editById($id, $_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);

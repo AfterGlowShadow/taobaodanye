@@ -45,16 +45,51 @@ class Classifys extends \app\app\tb\Attribute\admin\controller\logic\Classifys {
      * level			层级(表明第几层)
      * @return mixed|string
      */
-    public function add() {
+    public function addClass() {
         $param = $this->param;
-        $where[]=['name','=',$param['name']];
-        $res=parent::getItem($where);
-        if(!empty($res['result'])){
-            return rjData("此分类已经存在");
+        if(array_key_exists("name",$param)&&$param['name']!="") {
+            $where[] = ['name', '=', $param['name']];
+            $where[] = ['delete_time', '=', 0];
+            $res = parent::getItem($where);
+            if (!empty($res['result'])) {
+                return rjData("此分类已经存在");
+            } else {
+                return parent::add();
+            }
         }else{
-            return parent::add();
+            return rjData("缺少参数");
         }
-
     }
-
+    /**
+     * 更改
+     * 商品分类
+     * @api_name 更改分类
+     * @api_type 2
+     * @api_is_menu 0
+     * @api_is_maker 1
+     * @api_is_show 1
+     * @api_is_def_name 0
+     * @api_url /app/admin/Attribute.v1.Classifys.edit
+     *
+     * id
+     * name				产品分类名称
+     * pga				父亲分类id
+     * level			层级(表明第几层)
+     * @return mixed|string
+     */
+    public function editClass() {
+        $param = $this->param;
+        if(array_key_exists("name",$param)&&$param['name']!=""){
+            $where[]=['name','=',$param['name']];
+            $where[]=['delete_time','=',0];
+            $res=parent::getItem($where);
+            if(!empty($res['result'])){
+                return rjData("此分类已经存在");
+            }else{
+                return parent::edit();
+            }
+        }else{
+            return rjData("缺少参数");
+        }
+    }
 }

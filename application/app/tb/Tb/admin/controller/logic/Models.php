@@ -157,10 +157,12 @@ class Models extends ControllerCommon {
 		
 		$name = isset($param['name']) ? $param['name'] : '';
 		$url = isset($param['url']) ? $param['url'] : '';
+        $field = isset($param['field']) ? $param['field'] : '';
 		
 		$_data = [];
 		$_data['name'] = $name;
 		$_data['url'] = $url;
+		$_data['field']=$field;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
