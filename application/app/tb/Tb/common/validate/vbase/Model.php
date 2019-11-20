@@ -19,6 +19,7 @@ class Model extends Validate {
 	protected $rule = [
 		'name' => 'require|unique:app_tb_model,name',
 		'url' => 'require',
+		'field' => 'require',
 
 	];
     
@@ -32,11 +33,12 @@ class Model extends Validate {
 		'name.require' => '“”必须填写',
 		'name.unique' => '“”已存在',
 		'url.require' => '“”必须填写',
+		'field.require' => '“所用商品表字段”必须填写',
 
     ];
 
 	protected $scene = [
-		'add'  => ["name", "url"],
-		'edit' => ["name", "url"],
+		'add'  => ["name", "url", "field"],
+		'edit' => ["name", "url", "field"],
 	];
 }

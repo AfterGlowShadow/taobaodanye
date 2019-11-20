@@ -22,6 +22,7 @@ class Goodspecis extends Validate {
 		'price' => 'require',
 		'zprice' => 'require',
 		'img' => 'require',
+		'pricetype' => 'require',
 
 	];
     
@@ -37,11 +38,12 @@ class Goodspecis extends Validate {
 		'price.require' => '“真实价格”必须填写',
 		'zprice.require' => '“折扣价格”必须填写',
 		'img.require' => '“图片地址”必须填写',
+		'pricetype.require' => '“折扣还是不折扣(0为不折扣1为折扣)”必须填写',
 
     ];
 
 	protected $scene = [
-		'add'  => ["goodsid", "specsidl", "price", "zprice", "img"],
-		'edit' => ["goodsid", "specsidl", "price", "zprice", "img"],
+		'add'  => ["goodsid", "specsidl", "price", "zprice", "img", "pricetype"],
+		'edit' => ["goodsid", "specsidl", "price", "zprice", "img", "pricetype"],
 	];
 }

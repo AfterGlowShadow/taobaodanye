@@ -77,6 +77,7 @@ class Goodspeciss extends ControllerCommon {
 		$price = isset($param['price']) ? $param['price'] : 0;
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
+		$pricetype = isset($param['pricetype']) ? $param['pricetype'] : 0;
 
         /** @var $m Goodspecis */
         $m = $this->_model;
@@ -86,6 +87,7 @@ class Goodspeciss extends ControllerCommon {
 		isset($param['price']) && $_where[] = ['price', '=', $price];
 		isset($param['zprice']) && $_where[] = ['zprice', '=', $zprice];
 		isset($param['img']) && $_where[] = ['img', '=', $img];
+		isset($param['pricetype']) && $_where[] = ['pricetype', '=', $pricetype];
 
 		$_order = [];
 
@@ -151,11 +153,12 @@ class Goodspeciss extends ControllerCommon {
 	 * @api_is_def_name 0
 	 * @api_url /app/api/Attribute.v1.Goodspeciss.add
 	 * 
-	 * goodsid		商品id
-	 * specsidl		规格id列表
-	 * price		真实价格
-	 * zprice		折扣价格
-	 * img			图片地址
+	 * goodsid			商品id
+	 * specsidl			规格id列表
+	 * price			真实价格
+	 * zprice			折扣价格
+	 * img				图片地址
+	 * pricetype		折扣还是不折扣(0为不折扣1为折扣)
 	 * @return mixed|string
 	 */
 	public function add() {
@@ -168,6 +171,7 @@ class Goodspeciss extends ControllerCommon {
 		$price = isset($param['price']) ? $param['price'] : 0;
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
+		$pricetype = isset($param['pricetype']) ? $param['pricetype'] : 0;
 		
 		$_data = [];
 		$_data['goodsid'] = $goodsid;
@@ -175,6 +179,7 @@ class Goodspeciss extends ControllerCommon {
 		$_data['price'] = $price;
 		$_data['zprice'] = $zprice;
 		$_data['img'] = $img;
+		$_data['pricetype'] = $pricetype;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -194,12 +199,13 @@ class Goodspeciss extends ControllerCommon {
 	 * @api_is_def_name 0
 	 * @api_url /app/api/Attribute.v1.Goodspeciss.edit
 	 *
-	 * id			
-	 * goodsid		商品id
-	 * specsidl		规格id列表
-	 * price		真实价格
-	 * zprice		折扣价格
-	 * img			图片地址
+	 * id				
+	 * goodsid			商品id
+	 * specsidl			规格id列表
+	 * price			真实价格
+	 * zprice			折扣价格
+	 * img				图片地址
+	 * pricetype		折扣还是不折扣(0为不折扣1为折扣)
 	 * @return mixed|string
 	 */
 	public function edit() {
@@ -213,6 +219,7 @@ class Goodspeciss extends ControllerCommon {
 		$price = isset($param['price']) ? $param['price'] : 0;
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
+		$pricetype = isset($param['pricetype']) ? $param['pricetype'] : 0;
 		
 		$_data = [];
 		isset($param['goodsid']) && $_data['goodsid'] = $goodsid;
@@ -220,6 +227,7 @@ class Goodspeciss extends ControllerCommon {
 		isset($param['price']) && $_data['price'] = $price;
 		isset($param['zprice']) && $_data['zprice'] = $zprice;
 		isset($param['img']) && $_data['img'] = $img;
+		isset($param['pricetype']) && $_data['pricetype'] = $pricetype;
 		$re = $m->editById($id, $_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);

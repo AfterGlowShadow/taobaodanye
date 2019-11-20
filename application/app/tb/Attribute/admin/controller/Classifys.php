@@ -50,7 +50,8 @@ class Classifys extends \app\app\tb\Attribute\admin\controller\logic\Classifys {
         if(array_key_exists("name",$param)&&$param['name']!="") {
             $where[] = ['name', '=', $param['name']];
             $where[] = ['delete_time', '=', 0];
-            $res = parent::getItem($where);
+            $classM=new Classify();
+            $res = $classM->getItem($where);
             if (!empty($res['result'])) {
                 return rjData("此分类已经存在");
             } else {
@@ -82,7 +83,8 @@ class Classifys extends \app\app\tb\Attribute\admin\controller\logic\Classifys {
         if(array_key_exists("name",$param)&&$param['name']!=""){
             $where[]=['name','=',$param['name']];
             $where[]=['delete_time','=',0];
-            $res=parent::getItem($where);
+            $classM=new Classify();
+            $res = $classM->getItem($where);
             if(!empty($res['result'])){
                 return rjData("此分类已经存在");
             }else{

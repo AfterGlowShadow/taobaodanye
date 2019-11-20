@@ -7,6 +7,7 @@
 
 namespace app\app\tb\Tb\admin\controller;
 
+use app\app\tb\Attribute\common\model\Classgood;
 use app\app\tb\Attribute\common\model\Specs;
 use app\app\tb\Tb\common\model\Goods;
 use think\Db;
@@ -57,18 +58,21 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             $GoodM=new Goods();
             $gwhere['goodsname']=$param['goodsname'];
             $res=$GoodM->getItem($gwhere);
-            if(!empty($res['result'])){
+            if(empty($res['result'])){
                 $this->startTrans();
                 $re=parent::add();
-                if(!empty($res['result'])){
+                $re=json_decode($re->getContent(),true);
+                if(!empty($re['result'])){
                     if(array_key_exists("specs",$param)&&$param['specs']!=""){
-                        $specsarray=$this->SpecsFormat($param['specs'],$res['result']['id']);
+                        $specsarray=$this->SpecsFormat($param['specs'],$re['result']['id']);
+                        print_r($specsarray);
+                        exit;
                         $back['specs']=array();
                         $back['class']=array();
                         if(!empty($specsarray['specs'])&&!empty($specsarray['class'])){
                             $specsM=new Specs();
                             $res=$specsM->insertAll($specsarray['specs']);
-                            $ClassGoodM=new ClassGood();
+                            $ClassGoodM=new Classgood();
                             $res1=$ClassGoodM->insertAll($specsarray['class']);
                             if($res&&$res1){
                                 $this->commit();
@@ -107,12 +111,14 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      * apiFailureMock:
      */
     public function SpecsFormat($data,$id){
+        print_r($data);
+        exit;
         $data=json_decode($data,true);
-        $back['$specs']=array();
+        $back['specs']=array();
         $back['class']=array();
         foreach ($data as $key => $value){
-            if(array_key_exists("classify",$value)&&isset($value['classify'])&&array_key_exists("id",$value['classify'])&&array_key_exists("specsidl",$value['classify'])){
-                if(array_key_exists("goodsid",$value)&&$value['goodsid']!=""&&array_key_exists("specsidl",$value)&&$value['specsidl']!=""&&array_key_exists("price",$value)&&$value['price']!=""&&array_key_exists("zprice",$value)&&$value['zprice']!=""){
+            if(array_key_exists("classify",$value)&&isset($value['classify'])&&array_key_exists("id",$value['classify'])&&array_key_exists("specs",$value['classify'])){
+                if(array_key_exists("specsidl",$value['classify']['specs'])&&$value['specsidl']!=""&&array_key_exists("price",$value['classify']['specs'])&&$value['price']!=""&&array_key_exists("zprice",$value['classify']['specs'])&&$value['zprice']!=""){
                     $value['pricetype']=isset($value['pricetype']) ? $value['pricetype'] : 0;
                     $value['goodsid']=$id;
                     array_push( $back['specs'],$value);

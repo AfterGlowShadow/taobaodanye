@@ -19,7 +19,7 @@ class Specs extends Validate {
 	protected $rule = [
 		'name' => 'require|unique:app_attribute_specs,name',
 		'classifyid' => 'require',
-		'classify' => 'require',
+		'userid' => 'require',
 
 	];
     
@@ -33,12 +33,12 @@ class Specs extends Validate {
 		'name.require' => '“规格名称”必须填写',
 		'name.unique' => '“规格名称”已存在',
 		'classifyid.require' => '“所属分类id”必须填写',
-		'classify.require' => '“所属分类”必须填写',
+		'userid.require' => '“使用用户添加规格时 用户的id”必须填写',
 
     ];
 
 	protected $scene = [
-		'add'  => ["name", "classifyid", "classify"],
-		'edit' => ["name", "classifyid", "classify"],
+		'add'  => ["name", "classifyid", "userid"],
+		'edit' => ["name", "classifyid", "userid"],
 	];
 }

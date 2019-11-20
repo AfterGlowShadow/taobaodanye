@@ -74,6 +74,7 @@ class Models extends ControllerCommon {
 		$name = isset($param['name']) ? $param['name'] : '';
 		$url = isset($param['url']) ? $param['url'] : '';
 		$delete_time = isset($param['delete_time']) ? $param['delete_time'] : 0;
+		$field = isset($param['field']) ? $param['field'] : '';
 
         /** @var $m Model */
         $m = $this->_model;
@@ -81,6 +82,7 @@ class Models extends ControllerCommon {
 		isset($param['name']) && $_where[] = ['name', '=', $name];
 		isset($param['url']) && $_where[] = ['url', '=', $url];
 		isset($param['delete_time']) && $_where[] = ['delete_time', '=', $delete_time];
+		isset($param['field']) && $_where[] = ['field', '=', $field];
 
 		$_order = ['create_time' => 'DESC'];
 
@@ -148,6 +150,7 @@ class Models extends ControllerCommon {
 	 * 
 	 * name				
 	 * url				
+	 * field			所用商品表字段
 	 * @return mixed|string
 	 */
 	public function add() {
@@ -157,12 +160,12 @@ class Models extends ControllerCommon {
 		
 		$name = isset($param['name']) ? $param['name'] : '';
 		$url = isset($param['url']) ? $param['url'] : '';
-        $field = isset($param['field']) ? $param['field'] : '';
+		$field = isset($param['field']) ? $param['field'] : '';
 		
 		$_data = [];
 		$_data['name'] = $name;
 		$_data['url'] = $url;
-		$_data['field']=$field;
+		$_data['field'] = $field;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -185,6 +188,7 @@ class Models extends ControllerCommon {
 	 * id				
 	 * name				
 	 * url				
+	 * field			所用商品表字段
 	 * @return mixed|string
 	 */
 	public function edit() {
@@ -195,10 +199,12 @@ class Models extends ControllerCommon {
 		$id = $param['id'];
 		$name = isset($param['name']) ? $param['name'] : '';
 		$url = isset($param['url']) ? $param['url'] : '';
+		$field = isset($param['field']) ? $param['field'] : '';
 		
 		$_data = [];
 		isset($param['name']) && $_data['name'] = $name;
 		isset($param['url']) && $_data['url'] = $url;
+		isset($param['field']) && $_data['field'] = $field;
 		$re = $m->editById($id, $_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
