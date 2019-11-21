@@ -73,7 +73,7 @@ class Goodspeciss extends ControllerCommon {
         $page_limit = isset($param['page_limit']) ? $param['page_limit'] : PHP_INT_MAX;
 
 		$goodsid = isset($param['goodsid']) ? $param['goodsid'] : 0;
-		$specsidl = isset($param['specsidl']) ? $param['specsidl'] : '';
+		$attribute = isset($param['attribute']) ? $param['attribute'] : '';
 		$price = isset($param['price']) ? $param['price'] : 0;
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
@@ -83,7 +83,7 @@ class Goodspeciss extends ControllerCommon {
         $m = $this->_model;
         $_where = [];
 		isset($param['goodsid']) && $_where[] = ['goodsid', '=', $goodsid];
-		isset($param['specsidl']) && $_where[] = ['specsidl', '=', $specsidl];
+		isset($param['attribute']) && $_where[] = ['attribute', '=', $attribute];
 		isset($param['price']) && $_where[] = ['price', '=', $price];
 		isset($param['zprice']) && $_where[] = ['zprice', '=', $zprice];
 		isset($param['img']) && $_where[] = ['img', '=', $img];
@@ -154,7 +154,7 @@ class Goodspeciss extends ControllerCommon {
 	 * @api_url /app/api/Attribute.v1.Goodspeciss.add
 	 * 
 	 * goodsid			商品id
-	 * specsidl			规格id列表
+	 * attribute		规格id列表
 	 * price			真实价格
 	 * zprice			折扣价格
 	 * img				图片地址
@@ -167,7 +167,7 @@ class Goodspeciss extends ControllerCommon {
 		$param = $this->param;
 		
 		$goodsid = isset($param['goodsid']) ? $param['goodsid'] : 0;
-		$specsidl = isset($param['specsidl']) ? $param['specsidl'] : '';
+		$attribute = isset($param['attribute']) ? $param['attribute'] : '';
 		$price = isset($param['price']) ? $param['price'] : 0;
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
@@ -175,7 +175,7 @@ class Goodspeciss extends ControllerCommon {
 		
 		$_data = [];
 		$_data['goodsid'] = $goodsid;
-		$_data['specsidl'] = $specsidl;
+		$_data['attribute'] = $attribute;
 		$_data['price'] = $price;
 		$_data['zprice'] = $zprice;
 		$_data['img'] = $img;
@@ -201,7 +201,7 @@ class Goodspeciss extends ControllerCommon {
 	 *
 	 * id				
 	 * goodsid			商品id
-	 * specsidl			规格id列表
+	 * attribute		规格id列表
 	 * price			真实价格
 	 * zprice			折扣价格
 	 * img				图片地址
@@ -215,7 +215,7 @@ class Goodspeciss extends ControllerCommon {
 		
 		$id = $param['id'];
 		$goodsid = isset($param['goodsid']) ? $param['goodsid'] : 0;
-		$specsidl = isset($param['specsidl']) ? $param['specsidl'] : '';
+		$attribute = isset($param['attribute']) ? $param['attribute'] : '';
 		$price = isset($param['price']) ? $param['price'] : 0;
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
@@ -223,7 +223,7 @@ class Goodspeciss extends ControllerCommon {
 		
 		$_data = [];
 		isset($param['goodsid']) && $_data['goodsid'] = $goodsid;
-		isset($param['specsidl']) && $_data['specsidl'] = $specsidl;
+		isset($param['attribute']) && $_data['attribute'] = $attribute;
 		isset($param['price']) && $_data['price'] = $price;
 		isset($param['zprice']) && $_data['zprice'] = $zprice;
 		isset($param['img']) && $_data['img'] = $img;

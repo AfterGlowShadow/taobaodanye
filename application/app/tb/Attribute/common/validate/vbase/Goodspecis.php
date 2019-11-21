@@ -18,7 +18,7 @@ class Goodspecis extends Validate {
      */	
 	protected $rule = [
 		'goodsid' => 'require',
-		'specsidl' => 'require',
+		'attribute' => 'require',
 		'price' => 'require',
 		'zprice' => 'require',
 		'img' => 'require',
@@ -34,7 +34,7 @@ class Goodspecis extends Validate {
      */	
     protected $message = [
 		'goodsid.require' => '“商品id”必须填写',
-		'specsidl.require' => '“规格id列表”必须填写',
+		'attribute.require' => '“规格id列表”必须填写',
 		'price.require' => '“真实价格”必须填写',
 		'zprice.require' => '“折扣价格”必须填写',
 		'img.require' => '“图片地址”必须填写',
@@ -43,7 +43,7 @@ class Goodspecis extends Validate {
     ];
 
 	protected $scene = [
-		'add'  => ["goodsid", "specsidl", "price", "zprice", "img", "pricetype"],
-		'edit' => ["goodsid", "specsidl", "price", "zprice", "img", "pricetype"],
+		'add'  => ["goodsid", "attribute", "price", "zprice", "img", "pricetype"],
+		'edit' => ["goodsid", "attribute", "price", "zprice", "img", "pricetype"],
 	];
 }
