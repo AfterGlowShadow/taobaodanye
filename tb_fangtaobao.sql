@@ -10,28 +10,32 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-11-20 19:25:50
+Date: 2019-11-22 19:28:00
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `wp_app_attribute_classgood`
+-- Table structure for `wp_app_attribute_attri`
 -- ----------------------------
-DROP TABLE IF EXISTS `wp_app_attribute_classgood`;
-CREATE TABLE `wp_app_attribute_classgood` (
+DROP TABLE IF EXISTS `wp_app_attribute_attri`;
+CREATE TABLE `wp_app_attribute_attri` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `classify` int(11) DEFAULT NULL COMMENT '分类id',
-  `goodsid` int(11) DEFAULT NULL COMMENT '商品id',
+  `name` varchar(50) DEFAULT NULL COMMENT '名称',
   `create_time` int(11) DEFAULT NULL,
   `update_time` int(11) DEFAULT NULL,
-  `delete_time` int(11) DEFAULT NULL,
+  `delete_time` int(11) DEFAULT '0',
+  `specsid` int(11) DEFAULT NULL COMMENT '所属属性id',
+  `userid` int(11) DEFAULT '0' COMMENT '用户id',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='商品属性\r\n@name 属性\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
 
 -- ----------------------------
--- Records of wp_app_attribute_classgood
+-- Records of wp_app_attribute_attri
 -- ----------------------------
+INSERT INTO `wp_app_attribute_attri` VALUES ('1', 'test', '1574301960', '1574301960', '0', '1', '0');
+INSERT INTO `wp_app_attribute_attri` VALUES ('2', 'test11', '1574301983', '1574303016', '1574303016', '1', '0');
+INSERT INTO `wp_app_attribute_attri` VALUES ('3', 'test', '1574302219', '1574302219', '0', '1', '0');
 
 -- ----------------------------
 -- Table structure for `wp_app_attribute_classify`
@@ -46,13 +50,13 @@ CREATE TABLE `wp_app_attribute_classify` (
   `delete_time` int(11) DEFAULT '0',
   `level` int(3) DEFAULT NULL COMMENT '层级(表明第几层)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COMMENT='商品分类\r\n@name 分类\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COMMENT='商品分类\r\n@name 分类\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
 
 -- ----------------------------
 -- Records of wp_app_attribute_classify
 -- ----------------------------
-INSERT INTO `wp_app_attribute_classify` VALUES ('1', '3232', '0', '1574159753', '1574163659', '1574163659', '2');
-INSERT INTO `wp_app_attribute_classify` VALUES ('2', 'admin', '0', '1574159806', '1574166862', '0', '2');
+INSERT INTO `wp_app_attribute_classify` VALUES ('1', '3232', '0', '1574159753', '1574163659', '0', '2');
+INSERT INTO `wp_app_attribute_classify` VALUES ('2', 'test', '0', '1574159806', '1574302778', '0', '2');
 INSERT INTO `wp_app_attribute_classify` VALUES ('3', 'admin', '1', '1574160105', '1574160105', '0', null);
 INSERT INTO `wp_app_attribute_classify` VALUES ('4', 'test', '1', '1574162382', '1574162382', '0', null);
 INSERT INTO `wp_app_attribute_classify` VALUES ('5', 'test', '1', '1574162545', '1574162545', '0', '1');
@@ -69,25 +73,31 @@ INSERT INTO `wp_app_attribute_classify` VALUES ('28', 'test', '1', '1574237814',
 INSERT INTO `wp_app_attribute_classify` VALUES ('29', 'test', '1', '1574237818', '1574237818', '0', '1');
 INSERT INTO `wp_app_attribute_classify` VALUES ('30', 'test', '1', '1574237821', '1574237821', '0', '1');
 INSERT INTO `wp_app_attribute_classify` VALUES ('31', 'test2', '1', '1574237823', '1574237928', '0', '1');
+INSERT INTO `wp_app_attribute_classify` VALUES ('32', 'test', '0', '1574301935', '1574301935', '0', '0');
 
 -- ----------------------------
--- Table structure for `wp_app_attribute_goodspecis`
+-- Table structure for `wp_app_attribute_goodattr`
 -- ----------------------------
-DROP TABLE IF EXISTS `wp_app_attribute_goodspecis`;
-CREATE TABLE `wp_app_attribute_goodspecis` (
-  `id` int(11) NOT NULL DEFAULT '0',
+DROP TABLE IF EXISTS `wp_app_attribute_goodattr`;
+CREATE TABLE `wp_app_attribute_goodattr` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `goodsid` int(11) DEFAULT NULL COMMENT '商品id',
-  `specsidl` varchar(50) DEFAULT NULL COMMENT '规格id列表',
+  `attribute` varchar(50) DEFAULT NULL COMMENT '规格id列表',
   `price` int(11) DEFAULT NULL COMMENT '真实价格',
   `zprice` int(11) DEFAULT NULL COMMENT '折扣价格',
   `img` varchar(255) DEFAULT NULL COMMENT '图片地址',
   `pricetype` tinyint(1) DEFAULT '0' COMMENT '折扣还是不折扣(0为不折扣1为折扣)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='货物规格中间表\r\n@name 货物规格\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COMMENT='货物规格中间表\r\n@name 货物规格\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
 
 -- ----------------------------
--- Records of wp_app_attribute_goodspecis
+-- Records of wp_app_attribute_goodattr
 -- ----------------------------
+INSERT INTO `wp_app_attribute_goodattr` VALUES ('2', '29', '2-3-3', '4', '5', '3', '0');
+INSERT INTO `wp_app_attribute_goodattr` VALUES ('3', '30', '2-3-4', '4', '5', '3', '0');
+INSERT INTO `wp_app_attribute_goodattr` VALUES ('4', '31', '2-3-4', '4', '5', '3', '0');
+INSERT INTO `wp_app_attribute_goodattr` VALUES ('5', '27', '2-3-4', '4', '5', '3', '0');
+INSERT INTO `wp_app_attribute_goodattr` VALUES ('6', '27', '2-3-4', '4', '5', '3', '0');
 
 -- ----------------------------
 -- Table structure for `wp_app_attribute_specs`
@@ -102,7 +112,7 @@ CREATE TABLE `wp_app_attribute_specs` (
   `delete_time` int(11) DEFAULT '0',
   `userid` int(11) DEFAULT '0' COMMENT '使用用户添加规格时 用户的id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COMMENT='商品规格\r\n@name 规格\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='商品规格\r\n@name 规格\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
 
 -- ----------------------------
 -- Records of wp_app_attribute_specs
@@ -123,6 +133,7 @@ INSERT INTO `wp_app_attribute_specs` VALUES ('13', '32321111111', '24', '1574234
 INSERT INTO `wp_app_attribute_specs` VALUES ('14', '323211111111', '24', '1574234118', '1574234118', '0', '0');
 INSERT INTO `wp_app_attribute_specs` VALUES ('15', 'test', '24', '1574234217', '1574234217', '0', '0');
 INSERT INTO `wp_app_attribute_specs` VALUES ('16', 'test1', '24', '1574234268', '1574234443', '1574234443', '1');
+INSERT INTO `wp_app_attribute_specs` VALUES ('17', 'test', '25', '1574300999', '1574300999', '0', '1');
 
 -- ----------------------------
 -- Table structure for `wp_app_tb`
@@ -216,14 +227,18 @@ CREATE TABLE `wp_app_tb_goods` (
   `create_time` int(11) DEFAULT NULL,
   `update_time` int(11) DEFAULT NULL,
   `delete_time` int(11) DEFAULT '0',
-  `classify` int(11) DEFAULT NULL COMMENT '商品分类id',
+  `classify` int(11) DEFAULT '0' COMMENT '商品分类id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COMMENT='商品\r\n@name 商品\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COMMENT='商品\r\n@name 商品\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
 
 -- ----------------------------
 -- Records of wp_app_tb_goods
 -- ----------------------------
-INSERT INTO `wp_app_tb_goods` VALUES ('3', 'test', '1', '1', '[{\"name\":\"tian\"},{\"name\":\"long\"}]', '12', '1', '1574244336', '1574244336', '0', '1');
+INSERT INTO `wp_app_tb_goods` VALUES ('3', 'test', '1', '1', '[{\"name\":\"tian\"},{\"name\":\"long\"}]', '12', '1', '1574244336', '1574326540', '0', '1');
+INSERT INTO `wp_app_tb_goods` VALUES ('27', '321', '321', '321', '321', '321', '321', '1574324994', '1574328091', '0', '3');
+INSERT INTO `wp_app_tb_goods` VALUES ('29', '2', '1', '1', '[{\"name\":\"tian\"},{\"name\":\"long\"}]', '23', '121', '1574325080', '1574325080', '0', '24');
+INSERT INTO `wp_app_tb_goods` VALUES ('30', '22', '1', '1', '[{\"name\":\"tian\"},{\"name\":\"long\"}]', '23', '121', '1574325165', '1574325165', '0', '25');
+INSERT INTO `wp_app_tb_goods` VALUES ('31', '221', '1', '1', '[{\"name\":\"tian\"},{\"name\":\"long\"}]', '23', '121', '1574325180', '1574325180', '0', '26');
 
 -- ----------------------------
 -- Table structure for `wp_app_tb_model`
@@ -243,7 +258,7 @@ CREATE TABLE `wp_app_tb_model` (
 -- ----------------------------
 -- Records of wp_app_tb_model
 -- ----------------------------
-INSERT INTO `wp_app_tb_model` VALUES ('1', 'test', '1', '1574236053', '1574236935', '1574236935', '');
+INSERT INTO `wp_app_tb_model` VALUES ('1', 'test', '1', '1574236053', '1574236935', '0', '');
 INSERT INTO `wp_app_tb_model` VALUES ('2', '2', '2', '1574236798', '1574237592', '0', '');
 INSERT INTO `wp_app_tb_model` VALUES ('3', 'test1', '2', '1574236837', '1574236837', '0', '');
 
@@ -259,19 +274,21 @@ CREATE TABLE `wp_app_tb_order` (
   `price` int(11) DEFAULT '0' COMMENT '价格',
   `create_time` varchar(14) DEFAULT NULL COMMENT '创建时间',
   `pay_time` varchar(14) DEFAULT NULL COMMENT '支付时间',
-  `status` int(1) DEFAULT '0' COMMENT '支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败',
+  `status` int(1) DEFAULT '0' COMMENT '支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败 5退款',
   `ordersn` varchar(50) DEFAULT NULL COMMENT '订单编号',
   `orderoutsn` varchar(50) DEFAULT NULL COMMENT '外部订单编号',
   `number` int(50) DEFAULT '0' COMMENT '购买产品数量',
   `typeid` int(11) DEFAULT '0' COMMENT '产品类型id',
   `update_time` int(11) DEFAULT NULL,
   `delete_time` int(11) DEFAULT '0',
+  `goodattrid` int(11) DEFAULT '0' COMMENT '商品属性中间表id',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='订单\r\n@name 订单\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='订单\r\n@name 订单\r\n@is_api 1\r\n@is_show 1\r\n@is_auth 1';
 
 -- ----------------------------
 -- Records of wp_app_tb_order
 -- ----------------------------
+INSERT INTO `wp_app_tb_order` VALUES ('1', '121', '212', '3', '1000', '', '121', '3', '1212', '1212', '1212', '0', '1574387107', '0', '2');
 
 -- ----------------------------
 -- Table structure for `wp_sys_code_sms`
