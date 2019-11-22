@@ -7,11 +7,11 @@
 
 namespace app\app\tb\Attribute\admin\controller;
 
-use app\app\tb\Attribute\common\model\Goodspecis;
+use app\app\tb\Attribute\common\model\Goodattr;
 use think\Db;
 
 /**
- * Class Goodspeciss
+ * Class Goodattrs
  * 货物规格中间表
  * @api_name 货物规格
  * @api_type 2
@@ -21,12 +21,10 @@ use think\Db;
  * @api_is_def_name 0
  * @package app\app\tb\Attribute\admin\controller
  */
-class Goodspeciss extends \app\app\tb\Attribute\admin\controller\logic\Goodspeciss {
+class Goodattrs extends \app\app\tb\Attribute\admin\controller\logic\Goodattrs {
 
     public function init_before() {
         parent::init_before();
-
-
     }
 
 

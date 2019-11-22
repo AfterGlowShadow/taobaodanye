@@ -7,12 +7,12 @@
 
 namespace app\app\tb\Attribute\admin\controller\logic;
 
-use app\app\tb\Attribute\common\model\Goodspecis;
+use app\app\tb\Attribute\common\model\Goodattr;
 use app\sys\com\base\common\v1\controller\admin\ControllerCommon;
 use Exception;
 
 /**
- * Class Goodspeciss
+ * Class Goodattrs
  * 货物规格中间表
  * @api_name 货物规格
  * @api_type 2
@@ -22,7 +22,7 @@ use Exception;
  * @api_is_def_name 0
  * @package app\app\tb\Attribute\admin\controller\logic
  */
-class Goodspeciss extends ControllerCommon {
+class Goodattrs extends ControllerCommon {
     protected $_route_url = '/app/admin/Attribute.v1.{{$col}}.{{$act}}';
 
     public function initialize() {
@@ -34,7 +34,7 @@ class Goodspeciss extends ControllerCommon {
     }
 
     public function construct_after($app) {
-        $this->_model = new Goodspecis();
+        $this->_model = new Goodattr();
     }
 
     public function init_before() {
@@ -58,7 +58,7 @@ class Goodspeciss extends ControllerCommon {
 	 * @api_is_maker 1
 	 * @api_is_show 1
 	 * @api_is_def_name 0
-	 * @api_url /app/admin/Attribute.v1.Goodspeciss.getList
+	 * @api_url /app/admin/Attribute.v1.Goodattrs.getList
      *
      * page_num
      * page_limit
@@ -78,7 +78,7 @@ class Goodspeciss extends ControllerCommon {
 		$img = isset($param['img']) ? $param['img'] : '';
 		$pricetype = isset($param['pricetype']) ? $param['pricetype'] : 0;
 
-        /** @var $m Goodspecis */
+        /** @var $m Goodattr */
         $m = $this->_model;
         $_where = [];
 		isset($param['goodsid']) && $_where[] = ['goodsid', '=', $goodsid];
@@ -114,14 +114,14 @@ class Goodspeciss extends ControllerCommon {
 	 * @api_is_maker 1
 	 * @api_is_show 1
 	 * @api_is_def_name 0
-	 * @api_url /app/admin/Attribute.v1.Goodspeciss.getItemById
+	 * @api_url /app/admin/Attribute.v1.Goodattrs.getItemById
      *
      * id
      * @return \think\response\Json
      * @throws \think\Exception
      */
     public function getItemById() {
-        /** @var $m Goodspecis */
+        /** @var $m Goodattr */
         $m = $this->_model;
         $param = $this->param;
 
@@ -150,7 +150,7 @@ class Goodspeciss extends ControllerCommon {
 	 * @api_is_maker 1
 	 * @api_is_show 1
 	 * @api_is_def_name 0
-	 * @api_url /app/admin/Attribute.v1.Goodspeciss.add
+	 * @api_url /app/admin/Attribute.v1.Goodattrs.add
 	 * 
 	 * goodsid			商品id
 	 * attribute		规格id列表
@@ -161,7 +161,7 @@ class Goodspeciss extends ControllerCommon {
 	 * @return mixed|string
 	 */
 	public function add() {
-		/** @var $m Goodspecis */
+		/** @var $m Goodattr */
 		$m = $this->_model;
 		$param = $this->param;
 		
@@ -196,7 +196,7 @@ class Goodspeciss extends ControllerCommon {
 	 * @api_is_maker 1
 	 * @api_is_show 1
 	 * @api_is_def_name 0
-	 * @api_url /app/admin/Attribute.v1.Goodspeciss.edit
+	 * @api_url /app/admin/Attribute.v1.Goodattrs.edit
 	 *
 	 * id				
 	 * goodsid			商品id
@@ -208,7 +208,7 @@ class Goodspeciss extends ControllerCommon {
 	 * @return mixed|string
 	 */
 	public function edit() {
-		/** @var $m Goodspecis */
+		/** @var $m Goodattr */
 		$m = $this->_model;
 		$param = $this->param;
 		
@@ -243,7 +243,7 @@ class Goodspeciss extends ControllerCommon {
 	 * @api_is_maker 1
 	 * @api_is_show 1
 	 * @api_is_def_name 0
-	 * @api_url /app/admin/Attribute.v1.Goodspeciss.delete
+	 * @api_url /app/admin/Attribute.v1.Goodattrs.delete
      *
      * id
      * @return \think\response\Json

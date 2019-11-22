@@ -51,13 +51,13 @@ class Specss extends \app\app\tb\Attribute\admin\controller\logic\Specss {
         if(array_key_exists("classifyid",$param)&&$param['classifyid']!=""&&array_key_exists("name",$param)&&$param['name']!=""){
             $where['id']=$param['classifyid'];
             $classifysM=new Classify();
-            $ishas=$classifysM->getItem($where);
+            $ishas=$classifysM->getDataItem($where);
             if(!empty($ishas['result'])){
                 $swhere['classifyid']=$param['classifyid'];
                 $swhere['name']=$param['name'];
                 $swhere['delete_time']=0;
                 $SpecsM=new Specs();
-                $res=$SpecsM->getItem($swhere);
+                $res=$SpecsM->getDataItem($swhere);
                 if(empty($res['result'])){
                     return $this->add();
                 }else{
@@ -92,20 +92,20 @@ class Specss extends \app\app\tb\Attribute\admin\controller\logic\Specss {
         if(array_key_exists("classifyid",$param)&&$param['classifyid']!=""&&array_key_exists("name",$param)&&$param['name']!=""){
             $where['id']=$param['classifyid'];
             $classifysM=new Classify();
-            $ishas=$classifysM->getItem($where);
+            $ishas=$classifysM->getDataItem($where);
             if(!empty($ishas['result'])) {
                 $swhere['classifyid'] = $param['classifyid'];
                 $swhere['name'] = $param['name'];
                 $swhere['delete_time']=0;
                 $SpecsM = new Specs();
-                $res = $SpecsM->getItem($swhere);
+                $res = $SpecsM->getDataItem($swhere);
                 if (empty($res['result'])) {
                     return $this->edit();
                 } else {
                     return rjData("此规格已经存在,请确认后修改");
                 }
             }else{
-                return rjData("此分类不存在,请核实后添加");
+                return rjData("此分类不存在,请核实后修改");
             }
         }else{
             return rjData("缺少必要参数");

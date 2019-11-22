@@ -51,7 +51,7 @@ class Models extends \app\app\tb\Tb\admin\controller\logic\Models {
             $swhere['url']=$param['url'];
             $swhere['delete_time']=0;
             $ModelsM=new Model();
-            $res=$ModelsM->getItem($swhere);
+            $res=$ModelsM->getDataItem($swhere);
             if(empty($res['result'])){
                 return $this->add();
             }else{
@@ -84,7 +84,7 @@ class Models extends \app\app\tb\Tb\admin\controller\logic\Models {
             $swhere['url']=$param['url'];
             $swhere['delete_time']=0;
             $ModelsM=new Model();
-            $res=$ModelsM->getItem($swhere);
+            $res=$ModelsM->getDataItem($swhere);
             if(empty($res['result'])){
                 return $this->edit();
             }else{

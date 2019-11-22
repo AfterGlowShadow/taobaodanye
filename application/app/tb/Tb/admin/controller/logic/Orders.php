@@ -301,7 +301,7 @@ class Orders extends ControllerCommon {
 	 * @api_url /app/admin/Tb.v1.Orders.setStatus
 	 *
 	 * id				
-	 * status			支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败
+	 * status			支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败 5退款
 	 * @return mixed|string
 	 */
 	public function setStatus() {

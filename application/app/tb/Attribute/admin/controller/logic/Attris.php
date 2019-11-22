@@ -74,6 +74,7 @@ class Attris extends ControllerCommon {
 		$name = isset($param['name']) ? $param['name'] : '';
 		$delete_time = isset($param['delete_time']) ? $param['delete_time'] : 0;
 		$specsid = isset($param['specsid']) ? $param['specsid'] : 0;
+		$userid = isset($param['userid']) ? $param['userid'] : 0;
 
         /** @var $m Attri */
         $m = $this->_model;
@@ -81,6 +82,7 @@ class Attris extends ControllerCommon {
 		isset($param['name']) && $_where[] = ['name', '=', $name];
 		isset($param['delete_time']) && $_where[] = ['delete_time', '=', $delete_time];
 		isset($param['specsid']) && $_where[] = ['specsid', '=', $specsid];
+		isset($param['userid']) && $_where[] = ['userid', '=', $userid];
 
 		$_order = ['create_time' => 'DESC'];
 
@@ -148,6 +150,7 @@ class Attris extends ControllerCommon {
 	 * 
 	 * name				名称
 	 * specsid			所属属性id
+	 * userid			用户id
 	 * @return mixed|string
 	 */
 	public function add() {
@@ -157,10 +160,12 @@ class Attris extends ControllerCommon {
 		
 		$name = isset($param['name']) ? $param['name'] : '';
 		$specsid = isset($param['specsid']) ? $param['specsid'] : 0;
+		$userid = isset($param['userid']) ? $param['userid'] : 0;
 		
 		$_data = [];
 		$_data['name'] = $name;
 		$_data['specsid'] = $specsid;
+		$_data['userid'] = $userid;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -183,6 +188,7 @@ class Attris extends ControllerCommon {
 	 * id				
 	 * name				名称
 	 * specsid			所属属性id
+	 * userid			用户id
 	 * @return mixed|string
 	 */
 	public function edit() {
@@ -193,10 +199,12 @@ class Attris extends ControllerCommon {
 		$id = $param['id'];
 		$name = isset($param['name']) ? $param['name'] : '';
 		$specsid = isset($param['specsid']) ? $param['specsid'] : 0;
+		$userid = isset($param['userid']) ? $param['userid'] : 0;
 		
 		$_data = [];
 		isset($param['name']) && $_data['name'] = $name;
 		isset($param['specsid']) && $_data['specsid'] = $specsid;
+		isset($param['userid']) && $_data['userid'] = $userid;
 		$re = $m->editById($id, $_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
