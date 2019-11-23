@@ -7,7 +7,9 @@
 
 namespace app\app\tb\Attribute\admin\controller;
 
+use app\app\tb\Attribute\common\model\Attri;
 use app\app\tb\Attribute\common\model\Classify;
+use app\app\tb\Attribute\common\model\Goodattr;
 use app\app\tb\Attribute\common\model\Specs;
 use think\Db;
 
@@ -110,5 +112,59 @@ class Specss extends \app\app\tb\Attribute\admin\controller\logic\Specss {
         }else{
             return rjData("缺少必要参数");
         }
+    }
+    /**
+     * 删除
+     * 商品规格
+     * @api_name 删除规格(同时删除属性)
+     * @api_type 2
+     * @api_is_menu 0
+     * @api_is_maker 1
+     * @api_is_show 1
+     * @api_is_def_name 0
+     * @api_url /app/admin/Attribute.v1.Specss.deleteM
+     *
+     * id
+     * @return \think\response\Json  delete_more
+     * @throws \Throwable
+     * @throws \think\Exception\DbException
+     */
+    public function deleteM() {
+        $param=$this->param;
+        $specssM=new Specs();
+        if(array_key_exists("id",$param)&&$param['id']!=""){
+            $this->startTrans();
+            $AttriM=new Attri();
+            $_where=['specsid','=',$param['id']];
+            $re = $AttriM->destroy($_where);
+            $res=parent::delete();
+            $res=json_decode($res->getContent(),true);
+            if($re&&$res['status']=='ok'){
+                $this->commit();
+                return return_json($res);
+            }else{
+                $this->rollback();
+                return return_json_err("删除失败",400);
+            }
+        }else{
+            return return_json_err("缺少必要参数",400);
+        }
+    }
+    //遍历取出数组中的某个元素
+    public function getarrayitem($array,$item,$type=2)
+    {
+        $back=array();
+        foreach ($array as $key => $value){
+            if($type==1){
+                if($item==$key){
+                    array_key_exists($back,$value);
+                }
+            }else if($type==2){
+                if(array_key_exists($item,$value)){
+                    array_push($back,$value[$item]);
+                }
+            }
+        }
+        return $back;
     }
 }

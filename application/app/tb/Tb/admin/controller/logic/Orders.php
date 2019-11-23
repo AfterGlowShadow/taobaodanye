@@ -178,7 +178,6 @@ class Orders extends ControllerCommon {
 		/** @var $m Order */
 		$m = $this->_model;
 		$param = $this->param;
-		
 		$phone = isset($param['phone']) ? $param['phone'] : 0;
 		$address = isset($param['address']) ? $param['address'] : '';
 		$productid = isset($param['productid']) ? $param['productid'] : 0;
@@ -189,7 +188,8 @@ class Orders extends ControllerCommon {
 		$orderoutsn = isset($param['orderoutsn']) ? $param['orderoutsn'] : '';
 		$number = isset($param['number']) ? $param['number'] : 0;
 		$typeid = isset($param['typeid']) ? $param['typeid'] : 0;
-		
+		$goodattrid = isset($param['goodattrid']) ? $param['goodattrid'] : 0;
+
 		$_data = [];
 		$_data['phone'] = $phone;
 		$_data['address'] = $address;
@@ -201,6 +201,7 @@ class Orders extends ControllerCommon {
 		$_data['orderoutsn'] = $orderoutsn;
 		$_data['number'] = $number;
 		$_data['typeid'] = $typeid;
+        $_data['goodattrid']=$goodattrid;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);

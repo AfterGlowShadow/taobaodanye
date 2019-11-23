@@ -150,7 +150,6 @@ class ControllerCommon extends ResCommon {
 		/** @var $m ModelCommon */
 		$m = $this->_model;
 		$param = $this->param;
-		
 		try {
 			$ids = json_decode($param['ids']);// 更改属性
 			$delson = isset($param['delson']) ? $param['delson'] : 0;

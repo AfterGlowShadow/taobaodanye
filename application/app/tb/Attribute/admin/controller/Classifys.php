@@ -8,6 +8,7 @@
 namespace app\app\tb\Attribute\admin\controller;
 
 use app\app\tb\Attribute\common\model\Classify;
+use app\app\tb\Attribute\common\model\Specs;
 use app\app\tb\Attribute\common\validate\vbase\Classify as ClassifyValidate;
 use think\Db;
 
@@ -92,6 +93,39 @@ class Classifys extends \app\app\tb\Attribute\admin\controller\logic\Classifys {
             }
         }else{
             return rjData("缺少参数");
+        }
+    }
+    /**
+     * 获取列表
+     * 商品分类
+     * @api_name 获取分类列表
+     * @api_type 2
+     * @api_is_menu 0
+     * @api_is_maker 1
+     * @api_is_show 1
+     * @api_is_def_name 0
+     * @api_url /app/admin/Attribute.v1.Classifys.getList
+     *
+     * page_num
+     * page_limit
+     * @return \think\response\Json
+     * @throws \think\Exception
+     */
+    public function getListM() {
+        $res=parent::getList();
+        $res=json_decode($res->getContent(),true);
+        if(!empty($res['result'])){
+            foreach ($res['result']['data'] as $key => $value){
+                $specsM=new Specs();
+                $shwere['classifyid']=$value['id'];
+                $sres=$specsM->getList($shwere);
+                if(!empty($sres['result'])){
+                    $res['result']['data'][$key]['children']=$sres['result'];
+                }
+            }
+            return rjData($res);
+        }else{
+            return rjData($res);
         }
     }
 }

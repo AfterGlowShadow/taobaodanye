@@ -201,6 +201,7 @@ class Orders extends \app\app\tb\Tb\admin\controller\logic\Orders {
      */
     public function FormatOrder($res)
     {
+        $res['create_time']=date("Y-m-d H:i:s",$res['create_time']);
         $res['price']=$res['price']/100;
         $goodM=new Goods();
         $where['id']=$res['productid'];
@@ -216,6 +217,9 @@ class Orders extends \app\app\tb\Tb\admin\controller\logic\Orders {
         if(!empty($goodinfo['result'])){
             $attribute=$goodinfo['result']['attribute'];
             $attr=explode("-",$attribute);
+            //获得分类
+            $classM=new Classify();
+            $cwhere['id']=$attr[0];
             //获得分类
             $classM=new Classify();
             $cwhere['id']=$attr[0];
@@ -275,16 +279,35 @@ class Orders extends \app\app\tb\Tb\admin\controller\logic\Orders {
     public function addM() {
         $Pay=new AliPay();
         $param=$this->param;
-        //计算订单价格
-        //规格删除后 属性也要一并删除 以免现在添加商品时 添加上已经取消了的货物
-        $param['price'];
-        $param['status']=0;
-        $param['ordersn']=date("YmdHis",time()).rand(8);
-        $param['out_trade_no']=md5($param['ordersn']);
-        $param['total_amount']="12";
-        $param['subject']="fdsafdsa";
-        $param['terminal_type']="web";
-//        print_r($Pay->pay($param));
-        print_r($res=parent::add());
+        if(isset($param['phone'])&&$param['phone']!=""&&isset($param['address'])&&$param['address']!=""&&isset($param['guigeid'])&&$param['guigeid']!=""){
+            $param['number']=isset($param['number'])? $param['number']:0;
+            //计算订单价格
+            $goodattrM=new Goodattr();
+            $where['id']=$param['guigeid'];
+            $goodattr=$goodattrM->getDataItem($where);
+            if(!empty($goodattr['result'])){
+                if($goodattr['result']['pricetype']==0){
+                    $param['price']=$goodattr['result']['price']*$param['number'];
+                }else{
+                    $param['price']=$goodattr['result']['zprice']*$param['number'];
+                }
+                $param['goodattrid']=$param['guigeid'];
+                $param['productid']=$goodattr['result']['goodsid'];
+
+            }
+            //规格删除后 属性也要一并删除 以免现在添加商品时 添加上已经取消了的货物
+            $param['status']=0;
+            $param['ordersn']=date("YmdHis",time()).createCode(8);
+            $param['orderoutsn']=md5($param['ordersn']);
+            $param['total_amount']="12";
+            $param['subject']="fdsafdsa";
+            $param['terminal_type']="web";
+            $this->param=$param;
+            $res=parent::add();
+            $res=json_decode($res->getContent(),true);
+            print_r($res);
+        }else{
+            return return_json_err("缺少必要参数",400);
+        }
     }
 }

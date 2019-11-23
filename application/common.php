@@ -37,3 +37,16 @@ function hiddenName($name, $businessType)
     }
     return $city . '**' . $businessType . $licenseName;
 }
+/**
+ * 生成随机数
+ * @param $num 位数
+ * @return int
+ */
+function createCode($num = 4)
+{
+    $res = [];
+    for ($i = 0; $i < $num; $i++) {
+        $res[] = rand(0, 9);
+    }
+    return implode('', $res);
+}

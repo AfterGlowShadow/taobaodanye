@@ -255,5 +255,4 @@ class Goodattrs extends ControllerCommon {
     }
 
 
-
 }
