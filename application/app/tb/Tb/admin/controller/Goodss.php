@@ -399,9 +399,12 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      */
     public function CreateAttrlist($array,$length,$page,$backarray)
     {
-        if(count($array[0])==$page){
+        if($length==$page){
             return $backarray;
         }else{
+            array_push($backarray,$array[$page]);
+            print_r($this->CreateAttrlist($array,$length,$page+1,$backarray));
+            exit;
 
         }
     }
