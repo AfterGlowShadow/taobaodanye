@@ -120,7 +120,7 @@ class Classifys extends \app\app\tb\Attribute\admin\controller\logic\Classifys {
                 $shwere['classifyid']=$value['id'];
                 $sres=$specsM->getList($shwere);
                 if(!empty($sres['result'])){
-                    $res['result']['data'][$key]['children']=$sres['result'];
+                    $res['result']['data'][$key]['children']=$sres['result']['data'];
                 }
             }
             return rjData($res);

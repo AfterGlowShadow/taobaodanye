@@ -7,6 +7,7 @@
 
 namespace app\app\tb\Tb\admin\controller;
 
+use app\app\tb\Attribute\common\model\Attri;
 use app\app\tb\Attribute\common\model\Classgood;
 use app\app\tb\Attribute\common\model\Classify;
 use app\app\tb\Attribute\common\model\Goodattr;
@@ -335,6 +336,73 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             }
         }else{
             return return_json_err("缺少必要参数",400);
+        }
+    }
+    /**
+     * 添加商品活动属性排列
+     * @api_name 添加商品活动属性排列
+     * @api_type 2
+     * @api_is_menu 0
+     * @api_is_maker 1
+     * @api_is_show 1
+     * @api_is_def_name 0
+     * @api_url /app/admin/Tb.v1.Goodss.AttrisArray
+     *
+     * id
+     * @return mixed|string
+     * @throws \think\exception\PDOException
+     */
+    public function AttrisArray() {
+        $param=$this->param;
+        if(array_key_exists("id",$param)){
+            $classify=new Classify();
+            $cwhere['id']=$param['id'];
+            $classinfo=$classify->getDataItem($cwhere);
+            $classinfo['attrlist']=array();
+            if(!empty($classinfo['result'])) {
+                $specssm = new Specs();
+                $swhere['classifyid'] = $classinfo['result']['id'];
+                $specslist = $specssm->getList($swhere);
+                $item=array();
+                if (!empty($specslist['result']['data'])) {
+                    $attrim= new Attri();
+                    foreach ($specslist['result']['data'] as $key => $value){
+                        $awhere['specsid']=$value['id'];
+                        $attrlist=$attrim->getList($awhere);
+                        if(!empty($attrlist['result'])){
+                            $specslist['result']['data'][$key]['attr']=$attrlist['result'];
+                            if(!empty($attrlist['result']['data'])){
+                                array_push($item,$attrlist['result']['data']);
+                            }
+                        }
+                    }
+                    $backarray=array();
+                    print_r($this->CreateAttrlist($item,count($item),0,$backarray));
+                    print_r($specslist);
+                }else{
+                    return rjData($classinfo);
+                }
+            }else{
+                return return_json_err("没有此分类",400);
+            }
+        }else{
+            return return_json_err("缺少必要参数",400);
+        }
+    }
+    /**
+     * 生成属性的排列组合列表
+     * array数组
+     * length数组长度
+     * page当前数据执行到第几个
+     * backarray返回的整合数组
+     * npage数组内部执行到第几个
+     */
+    public function CreateAttrlist($array,$length,$page,$backarray)
+    {
+        if(count($array[0])==$page){
+            return $backarray;
+        }else{
+
         }
     }
 }
