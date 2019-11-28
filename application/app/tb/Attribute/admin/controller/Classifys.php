@@ -7,6 +7,7 @@
 
 namespace app\app\tb\Attribute\admin\controller;
 
+use app\app\tb\Attribute\common\model\Attri;
 use app\app\tb\Attribute\common\model\Classify;
 use app\app\tb\Attribute\common\model\Specs;
 use app\app\tb\Attribute\common\validate\vbase\Classify as ClassifyValidate;
@@ -119,8 +120,23 @@ class Classifys extends \app\app\tb\Attribute\admin\controller\logic\Classifys {
                 $specsM=new Specs();
                 $shwere['classifyid']=$value['id'];
                 $sres=$specsM->getList($shwere);
-                if(!empty($sres['result'])){
+                $res['result']['data'][$key]['atype']=1;
+                if(!empty($sres['result']['data'])){
                     $res['result']['data'][$key]['children']=$sres['result']['data'];
+                    $Attrim=new Attri();
+                    foreach ($sres['result']['data'] as $k => $v){
+                        $awhere['specsid']=$v['id'];
+                        $res['result']['data'][$key]['children'][$k]['atype']=2;
+                        $res['result']['data'][$key]['children'][$k]['upid']=$value['id'];
+                        $ares=$Attrim->getList($awhere);
+                        if(!empty($ares['result']['data'])){
+                            foreach ($ares['result']['data'] as $k1 => $v1){
+                                $ares['result']['data'][$k1]['atype']=3;
+                                $ares['result']['data'][$k1]['upid']=$v['id'];
+                            }
+                            $res['result']['data'][$key]['children'][$k]['children']=$ares['result']['data'];
+                        }
+                    }
                 }
             }
             return rjData($res);

@@ -225,6 +225,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             }else{
                 $res['result']['data'][$key]['modelidname']="未知";
             }
+            $res['result']['data'][$key]['create_time']=date("Y-m-d H:i:s",$value['create_time']);
         }
         return return_json($res);
     }
@@ -376,10 +377,14 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                             }
                         }
                     }
-                    $backarray=array();
-                    print_r($this->CreateAttrlist($item,count($item),0,$backarray));
-                    print_r($specslist);
+//                    print_r($this->myFormatAttr($item,count($item)-1));
+//                    exit;
+                    $item=$this->combination($item);
+                    $back=$this->FormatAttr($item);
+                    $classinfo['result']['attr']=$back;
+                    return rjData($classinfo);
                 }else{
+                    $classinfo['result']['attr']=array();
                     return rjData($classinfo);
                 }
             }else{
@@ -397,15 +402,55 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      * backarray返回的整合数组
      * npage数组内部执行到第几个
      */
-    public function CreateAttrlist($array,$length,$page,$backarray)
+    function combination(array $options)
     {
-        if($length==$page){
-            return $backarray;
-        }else{
-            array_push($backarray,$array[$page]);
-            print_r($this->CreateAttrlist($array,$length,$page+1,$backarray));
-            exit;
-
+        $rows = [];
+        foreach ($options as $option => $items) {
+            if (count($rows) > 0) {
+                // 2、将第一列作为模板
+                $clone = $rows;
+                // 3、置空当前列表，因为只有第一列的数据，组合是不完整的
+                $rows = [];
+                // 4、遍历当前列，追加到模板中，使模板中的组合变得完整
+                foreach ($items as $item) {
+                    $tmp = $clone;
+                    foreach ($tmp as $index => $value) {
+                        $value[$option] = $item;
+                        $tmp[$index] = $value;
+                    }
+                    // 5、将完整的组合拼回原列表中
+                    $rows = array_merge($rows, $tmp);
+                }
+            } else {
+                // 1、先计算出第一列
+                foreach ($items as $item) {
+                    $rows[][$option] = $item;
+                }
+            }
         }
+        return $rows;
+    }
+
+    /**
+     * 对组合后的属性进行格式化 格式为1-2-3 array(name1 name2 name3)
+     */
+    public function FormatAttr($array)
+    {
+        $result=array();
+        foreach ($array as $key => $value){
+            $item=array();
+            $item['id']="";
+            $item['name']="";
+            $item['namearray']=array();
+            foreach ($value as $k => $v){
+                $item['id'].=$v['id']."-";
+                $item['name'].=$v['name']."-";
+                array_push($item['namearray'],$v['name']);
+            }
+            $item['id']=substr($item['id'],0,strlen($item['id'])-1);
+            $item['name']=substr($item['name'],0,strlen($item['name'])-1);
+            array_push($result,$item);
+        }
+       return $result;
     }
 }
