@@ -58,7 +58,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      */
     public function addGoods() {
         $param=$this->param;
-        if(array_key_exists("goodsname",$param)&&$param['goodsname']!=""&&array_key_exists("price",$param)&&$param['price']!=""&&array_key_exists("title",$param)&&$param['title']!=""&&array_key_exists("description",$param)&&$param['description']!=""&&array_key_exists("content",$param)&&$param['content']!=""&&array_key_exists("modelid",$param)&&$param['modelid']!=""){
+        if(array_key_exists("goodsname",$param)&&$param['goodsname']!=""&&array_key_exists("classify",$param)&&$param['classify']!=""&&array_key_exists("price",$param)&&$param['price']!=""&&array_key_exists("title",$param)&&$param['title']!=""&&array_key_exists("description",$param)&&$param['description']!=""&&array_key_exists("content",$param)&&$param['content']!=""){
             $GoodM=new Goods();
             $gwhere['goodsname']=$param['goodsname'];
             $res=$GoodM->getDataItem($gwhere);
@@ -89,12 +89,10 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                     }
                 }else{
                     $this->rollback();
-                    return rjData("商品添加失败");
-                    return return_json_err("缺少必要参数",400);
+                    return return_json_err("商品添加失败",400);
                 }
             }else{
-                return rjData("商品名不能重复");
-                return return_json_err("缺少必要参数",400);
+                return return_json_err("商品名不能重复",400);
             }
         }else{
             return return_json_err("缺少必要参数",400);
@@ -114,10 +112,13 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
         $data=json_decode($data,true);
         $back=array();
         foreach ($data as $key => $value){
-            if(array_key_exists("goodsid",$value)&&isset($value['goodsid'])&&array_key_exists("attribute",$value)&&$value['attribute']!=""&&array_key_exists("price",$value)&&$value['price']!=""&&array_key_exists("zprice",$value)&&$value['zprice']!=""&&array_key_exists("img",$value)&&$value['img']!=""){
-                $value['pricetype']=isset($value['pricetype']) ? $value['pricetype'] : 0;
-                $value['goodsid']=$id;
-                array_push( $back,$value);
+            if(array_key_exists("price",$value)&&$value['price']!=""&&array_key_exists("name",$value)&&$value['name']!=""&&array_key_exists("id",$value)&&$value['id']!=""){
+                $value1['pricetype']=isset($value['pricetype']) ? $value['pricetype'] : 0;
+                $value1['attribute']=$value['name'];
+                $value1['goodsid']=$id;
+                $value1['attrid']=$value['id'];
+                $value1['price']=$value['price'];
+                array_push( $back,$value1);
             }
         }
         return $back;
@@ -172,7 +173,16 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             }else{
                 $res['result']['modelidname']="未知";
             }
-            return rjData($res);
+            $GoodattrM = new Goodattr();
+            $wherea['goodsid'] = $res['result']['id'];
+            $wherea['delete_time'] = 0;
+            $re = $GoodattrM->getList($wherea);
+            if (!empty($re['result']['data'])) {
+                $res['result']['specs'] = $re['result']['data'];
+            } else {
+                $res['result']['specs'] =array();
+            }
+            return rjData($res['result']);
         }else{
             return rjData("");
         }
@@ -254,9 +264,10 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      */
     public function editM() {
         $param=$this->param;
-        if(array_key_exists("id",$param)&&array_key_exists("goodsname",$param)&&$param['goodsname']!=""&&array_key_exists("price",$param)&&$param['price']!=""&&array_key_exists("title",$param)&&$param['title']!=""&&array_key_exists("description",$param)&&$param['description']!=""&&array_key_exists("content",$param)&&$param['content']!=""&&array_key_exists("modelid",$param)&&$param['modelid']!=""){
+        if(array_key_exists("goodsname",$param)&&$param['goodsname']!=""&&array_key_exists("id",$param)&&$param['id']!=""&&array_key_exists("classify",$param)&&$param['classify']!=""&&array_key_exists("price",$param)&&$param['price']!=""&&array_key_exists("title",$param)&&$param['title']!=""&&array_key_exists("description",$param)&&$param['description']!=""&&array_key_exists("content",$param)&&$param['content']!=""){
             $GoodM=new Goods();
-            $gwhere['goodsname']=$param['goodsname'];
+            $gwhere[]=["goodsname",'=',$param['goodsname']];
+            $gwhere[]=['id',"!=",$param['id']];
             $res=$GoodM->getDataItem($gwhere);
             if(empty($res['result'])){
                 $this->startTrans();
@@ -339,6 +350,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             return return_json_err("缺少必要参数",400);
         }
     }
+
     /**
      * 添加商品活动属性排列
      * @api_name 添加商品活动属性排列
@@ -352,6 +364,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      * id
      * @return mixed|string
      * @throws \think\exception\PDOException
+     * @throws \think\Exception
      */
     public function AttrisArray() {
         $param=$this->param;
