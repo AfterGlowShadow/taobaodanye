@@ -279,7 +279,7 @@ class Orders extends \app\app\tb\Tb\admin\controller\logic\Orders {
     public function addM() {
         $Pay=new AliPay();
         $param=$this->param;
-        if(isset($param['phone'])&&$param['phone']!=""&&isset($param['address'])&&$param['address']!=""&&isset($param['guigeid'])&&$param['guigeid']!=""){
+        if(array_key_exists('username',$param)&&$param['username']!=""&&array_key_exists('phone',$param)&&$param['phone']!=""&&array_key_exists('address',$param)&&$param['address']!=""&&array_key_exists('guigeid',$param)&&$param['guigeid']!=""&&array_key_exists('nmber',$param['number'])){
             $param['number']=isset($param['number'])? $param['number']:0;
             //计算订单价格
             $goodattrM=new Goodattr();
@@ -287,9 +287,9 @@ class Orders extends \app\app\tb\Tb\admin\controller\logic\Orders {
             $goodattr=$goodattrM->getDataItem($where);
             if(!empty($goodattr['result'])){
                 if($goodattr['result']['pricetype']==0){
-                    $param['price']=$goodattr['result']['price']*$param['number'];
+                    $param['price']=$goodattr['result']['price']/100*$param['number'];
                 }else{
-                    $param['price']=$goodattr['result']['zprice']*$param['number'];
+                    $param['price']=$goodattr['result']['zprice']/100*$param['number'];
                 }
                 $param['goodattrid']=$param['guigeid'];
                 $param['productid']=$goodattr['result']['goodsid'];
@@ -305,7 +305,12 @@ class Orders extends \app\app\tb\Tb\admin\controller\logic\Orders {
             $this->param=$param;
             $res=parent::add();
             $res=json_decode($res->getContent(),true);
-            print_r($res);
+
+            $url='http://192.168.1.122/index.php?n='.$param['price'].'&b='.$param['username'];  //需改
+            $url_val=urlencode(mb_convert_encoding("$url", 'utf-8'))."\n";
+            $url_='alipays://platformapi/startapp?saId=10000007&qrcode='.$url_val;
+            return redirect($url_);
+//            print_r($res);
         }else{
             return return_json_err("缺少必要参数",400);
         }

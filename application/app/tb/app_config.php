@@ -9,7 +9,10 @@
 return [
 	// 权限白名单
 	'auth_white' => [
-	    '/app/api/Tb.v1.Goodss.getItemByIdM'
+	    '/app/api/Tb.v1.Goodss.getItemByIdM',
+        '/app/api/Tb.v1.Goodss.getListM',
+        '/app/api/Tb.v1.Goodss.GetSGood',
+        '/app/api/Tb.v1.Goodss.AttrisArray'
 //		'/app/api/Trip.v1.Trips.getList',
 //		'/app/api/Trip.v1.Trips.getItemById',
 //		'/app/api/Sns.v1.Snss.getListNew',

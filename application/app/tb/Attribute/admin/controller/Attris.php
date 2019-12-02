@@ -56,15 +56,15 @@ class Attris extends \app\app\tb\Attribute\admin\controller\logic\Attris {
                 $AttrM = new Attri();
                 $res = $AttrM->getDataItem($where1);
                 if (!empty($res['result'])) {
-                    return rjData("此属性已经存在");
+                    return return_json_err("此属性已经存在",400);
                 } else {
                     return parent::add();
                 }
             }else{
-                return rjData("此规格不存在,请核实后添加");
+                return return_json_err("此规格不存在,请核实后添加",400);
             }
         }else{
-            return rjData("缺少参数");
+            return return_json_err("缺少参数",400);
         }
     }
     /**
@@ -99,13 +99,13 @@ class Attris extends \app\app\tb\Attribute\admin\controller\logic\Attris {
                 if (empty($res['result'])) {
                     return $this->edit();
                 } else {
-                    return rjData("此属性已经存在,请确认后修改");
+                    return return_json_err("此属性已经存在,请确认后修改",400);
                 }
             }else{
-                return rjData("此规格不存在,请核实后修改");
+                return return_json_err("此规格不存在,请核实后修改",400);
             }
         }else{
-            return rjData("缺少必要参数");
+                return return_json_err("缺少必要参数",400);
         }
     }
 

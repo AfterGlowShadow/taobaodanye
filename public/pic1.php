@@ -1,92 +1,4 @@
-<?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006-2016 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: 流年 <liu21st@gmail.com>
-// +----------------------------------------------------------------------
-
-// 应用公共文件
-use think\facade\Log;
-use think\Db;
-use think\helper\Str;
-
-include_once "sys/com/base/common.php";
-
-/**
- * @param $name 公司名
- * @param $businessType 类别
- * @return string
- */
-function hiddenName($name, $businessType)
-{
-    $province = ['北京', '天津', '河北', '石家庄', '唐山', '秦皇岛', '邯郸', '邢台', '保定', '张家口', '承德', '沧州', '廊坊', '衡水'];
-    $type = ['有限公司', '有限责任公司'];
-    $licenseName = '有限公司';
-    $city = '';
-    if (strstr($name, $type[1]) !== false) {
-        $licenseName = '有限责任公司';
-    }
-    foreach ($province as $v) {
-        if (strstr($name, $v) !== false) {
-            $city = $v;
-        }
-    }
-    return $city . '**' . $businessType . $licenseName;
-}
-/**
- * 生成随机数
- * @param $num 位数
- * @return int
- */
-function createCode($num = 4)
-{
-    $res = [];
-    for ($i = 0; $i < $num; $i++) {
-        $res[] = rand(0, 9);
-    }
-    return implode('', $res);
-}
-//生成二维码
-function scerweima($url = '',$logo="")
-{
-    require_once './phpqrcode/phpqrcode.php';
-    $value = $url; //二维码内容
-    $errorCorrectionLevel = 'H'; //容错级别
-    $matrixPointSize = 6; //生成图片大小
-//生成二维码图片
-    $filename =  "../public/Upload/Qrcode/".microtime() . '.png';
-    QRcode::png($value, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
-//    $logo = '1.jpg'; //准备好的logo图片
-    $QR = $filename; //已经生成的原始二维码图
-    if (file_exists($logo)) {
-        $QR = imagecreatefromstring(file_get_contents($QR)); //目标图象连接资源。
-        $logo = imagecreatefromstring(file_get_contents($logo)); //源图象连接资源。
-        $QR_width = imagesx($QR); //二维码图片宽度
-        $QR_height = imagesy($QR); //二维码图片高度
-        $logo_width = imagesx($logo); //logo图片宽度
-        $logo_height = imagesy($logo); //logo图片高度
-        $logo_qr_width = $QR_width / 4; //组合之后logo的宽度(占二维码的1/5)
-        $scale = $logo_width / $logo_qr_width; //logo的宽度缩放比(本身宽度/组合后的宽度)
-        $logo_qr_height = $logo_height / $scale; //组合之后logo的高度
-        $from_width = ($QR_width - $logo_qr_width) / 2; //组合之后logo左上角所在坐标点
-//重新组合图片并调整大小
-        /*
-        imagecopyresampled() 将一幅图像(源图象)中的一块正方形区域拷贝到另一个图像中
-        */
-        imagecopyresampled($QR, $logo, $from_width, $from_width, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
-
-        imagepng($QR, '../public/qrcode.png');
-        imagedestroy($QR);
-        imagedestroy($logo);
-    }
-//输出图片
-    return $filename;
-}
-/**
+<?php /**
  *
  * 生成宣传海报
  *
@@ -100,7 +12,7 @@ function createPoster($config = array(), $filename = "")
 {
 
     if (empty($filename)){
-//        header("content-type: image/png");
+        header("content-type: image/png");
     }
 //如果要看报什么错，可以先注释调这个header
     $imageDefault = array(
@@ -128,7 +40,7 @@ function createPoster($config = array(), $filename = "")
     $backgroundWidth = imagesx($background); //背景宽度
     $backgroundHeight = imagesy($background); //背景高度
 //    $imageRes = imageCreatetruecolor($backgroundWidth, $backgroundHeight);
-    $imageRes = imageCreatetruecolor($backgroundWidth, $backgroundHeight);
+   $imageRes = imageCreatetruecolor($backgroundWidth, $backgroundHeight);
     $color = imagecolorallocate($imageRes, 0, 0, 0);
     imagefill($imageRes, 0, 0, $color);
 // imageColorTransparent($imageRes, $color); //颜色透明
@@ -181,3 +93,91 @@ function createPoster($config = array(), $filename = "")
         imagedestroy($imageRes);
     }
 }
+// 使用示例一：生成带有二维码的海报
+//2. 在生成的二维码中加上logo(生成图片文件)
+function scerweima1($url = '')
+{
+    require_once './phpqrcode/phpqrcode.php';
+    $value = $url; //二维码内容
+    $errorCorrectionLevel = 'H'; //容错级别
+    $matrixPointSize = 6; //生成图片大小
+//生成二维码图片
+    $filename =  microtime() . '.png';
+    QRcode::png($value, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
+    $logo = '1.jpg'; //准备好的logo图片
+    $QR = $filename; //已经生成的原始二维码图
+    if (file_exists($logo)) {
+        $QR = imagecreatefromstring(file_get_contents($QR)); //目标图象连接资源。
+        $logo = imagecreatefromstring(file_get_contents($logo)); //源图象连接资源。
+        $QR_width = imagesx($QR); //二维码图片宽度
+        $QR_height = imagesy($QR); //二维码图片高度
+        $logo_width = imagesx($logo); //logo图片宽度
+        $logo_height = imagesy($logo); //logo图片高度
+        $logo_qr_width = $QR_width / 4; //组合之后logo的宽度(占二维码的1/5)
+        $scale = $logo_width / $logo_qr_width; //logo的宽度缩放比(本身宽度/组合后的宽度)
+        $logo_qr_height = $logo_height / $scale; //组合之后logo的高度
+        $from_width = ($QR_width - $logo_qr_width) / 2; //组合之后logo左上角所在坐标点
+//重新组合图片并调整大小
+        /*
+        imagecopyresampled() 将一幅图像(源图象)中的一块正方形区域拷贝到另一个图像中
+        */
+        imagecopyresampled($QR, $logo, $from_width, $from_width, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
+    }
+//输出图片
+    imagepng($QR, 'qrcode.png');
+    imagedestroy($QR);
+    imagedestroy($logo);
+    return '<img src="qrcode.png" alt="使用微信扫描支付">';
+}
+//调用查看结果
+//echo scerweima1('https://www.baidu.com');
+// 使用示例二：生成带有图像，昵称和二维码的海报
+$config = array(
+    'text' => array(
+        array(
+            'text' => '121312',
+            'left' => 182,
+            'top' => 105,
+            'fontPath' => './simhei.ttf', //字体文件
+            'fontSize' => 30, //字号
+            'fontColor' => '255,0,0', //字体颜色
+            'angle' => 0,
+        )
+    ),
+    'image' => array(
+        array(
+            'url' => './qrcode.png', //图片资源路径
+            'left' => 130,
+            'top' => -140,
+            'stream' => 0, //图片资源是否是字符串图像流
+            'right' => 0,
+            'bottom' => 0,
+            'width' => 150,
+            'height' => 150,
+            'opacity' => 100
+        ),
+//        array(
+//            'url' => 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eofD96opK97RXwM179G9IJytIgqXod8jH9icFf6Cia6sJ0fxeILLMLf0dVviaF3SnibxtrFaVO3c8Ria2w/0',
+//            'left' => 120,
+//            'top' => 70,
+//            'right' => 0,
+//            'stream' => 0,
+//            'bottom' => 0,
+//            'width' => 55,
+//            'height' => 55,
+//            'opacity' => 100
+//        ),
+    ),
+    'background' => '1.jpg',
+);
+$filename = 'qrcode/' . time() . '.jpg';
+//$config['background'] ="1.jpg";
+//$config['image']="";
+//$config['text']="this is  a test";
+//$filename = "tian.jpg";
+//createPoster($config, $filename);
+//echo createPoster($config,$filename);
+echo createPoster($config);
+
+
+?>

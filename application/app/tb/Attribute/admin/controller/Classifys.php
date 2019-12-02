@@ -141,7 +141,7 @@ class Classifys extends \app\app\tb\Attribute\admin\controller\logic\Classifys {
             }
             return rjData($res);
         }else{
-            return rjData($res);
+            return return_json_err("缺少必要参数",400);
         }
     }
 }

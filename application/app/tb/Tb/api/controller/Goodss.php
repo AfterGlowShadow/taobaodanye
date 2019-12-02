@@ -7,8 +7,10 @@
 
 namespace app\app\tb\Tb\api\controller;
 
+use app\app\tb\Attribute\common\model\Attri;
 use app\app\tb\Attribute\common\model\Classify;
 use app\app\tb\Attribute\common\model\Goodattr;
+use app\app\tb\Attribute\common\model\Specs;
 use app\app\tb\Tb\common\model\Goods;
 use app\app\tb\Tb\common\model\Model;
 use think\Db;
@@ -190,5 +192,60 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
             return return_json_err("缺少必要参数",400);
         }
     }
-
+    /**
+     * 添加商品活动属性排列
+     * @api_name 添加商品活动属性排列
+     * @api_type 2
+     * @api_is_menu 0
+     * @api_is_maker 1
+     * @api_is_show 1
+     * @api_is_def_name 0
+     * @api_url /app/api/Tb.v1.Goodss.AttrisArray
+     *
+     * id
+     * @return mixed|string
+     * @throws \think\exception\PDOException
+     * @throws \think\Exception
+     */
+    public function AttrisArray() {
+        $param=$this->param;
+        if(array_key_exists("id",$param)){
+            $classify=new Classify();
+            $cwhere['id']=$param['id'];
+            $classinfo=$classify->getDataItem($cwhere);
+            $classinfo['attrlist']=array();
+            if(!empty($classinfo['result'])) {
+                $specssm = new Specs();
+                $swhere['classifyid'] = $classinfo['result']['id'];
+                $specslist = $specssm->getList($swhere);
+                $item=array();
+                if (!empty($specslist['result']['data'])) {
+                    $attrim= new Attri();
+                    foreach ($specslist['result']['data'] as $key => $value){
+                        $awhere['specsid']=$value['id'];
+                        $attrlist=$attrim->getList($awhere);
+                        if(!empty($attrlist['result'])){
+                            $specslist['result']['data'][$key]['attr']=$attrlist['result'];
+                            if(!empty($attrlist['result']['data'])){
+                                array_push($item,$attrlist['result']['data']);
+                            }
+                        }
+                    }
+//                    print_r($this->myFormatAttr($item,count($item)-1));
+//                    exit;
+                    $item=$this->combination($item);
+                    $back=$this->FormatAttr($item);
+                    $classinfo['result']['attr']=$back;
+                    return rjData($classinfo);
+                }else{
+                    $classinfo['result']['attr']=array();
+                    return rjData($classinfo);
+                }
+            }else{
+                return return_json_err("没有此分类",400);
+            }
+        }else{
+            return return_json_err("缺少必要参数",400);
+        }
+    }
 }

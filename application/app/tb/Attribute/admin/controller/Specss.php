@@ -63,13 +63,13 @@ class Specss extends \app\app\tb\Attribute\admin\controller\logic\Specss {
                 if(empty($res['result'])){
                     return $this->add();
                 }else{
-                    return rjData("此规格已经存在,请勿重复添加");
+                    return return_json_err("此规格已经存在,请勿重复添加");
                 }
             }else{
-                return rjData("此分类不存在,请核实后添加");
+                return return_json_err("此分类不存在,请核实后添加");
             }
         }else{
-            return rjData("缺少必要参数");
+            return return_json_err("缺少必要参数");
         }
     }
     /**
@@ -104,13 +104,13 @@ class Specss extends \app\app\tb\Attribute\admin\controller\logic\Specss {
                 if (empty($res['result'])) {
                     return $this->edit();
                 } else {
-                    return rjData("此规格已经存在,请确认后修改");
+                    return return_json_err("此规格已经存在,请确认后修改");
                 }
             }else{
-                return rjData("此分类不存在,请核实后修改");
+                return return_json_err("此分类不存在,请核实后修改");
             }
         }else{
-            return rjData("缺少必要参数");
+            return return_json_err("缺少必要参数");
         }
     }
     /**
@@ -141,7 +141,7 @@ class Specss extends \app\app\tb\Attribute\admin\controller\logic\Specss {
             $res=json_decode($res->getContent(),true);
             if($re&&$res['status']=='ok'){
                 $this->commit();
-                return return_json($res);
+                return rjData($res);
             }else{
                 $this->rollback();
                 return return_json_err("删除失败",400);

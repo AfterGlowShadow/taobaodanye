@@ -29,6 +29,21 @@ class Banners extends \app\app\tb\Tb\admin\controller\logic\Banners {
 
     }
 
+    /**
+     * Created by PhpStorm.
+     * 根据商品ID获得轮播图
+     */
+    public function GetListM(){
+        $param=$this->param;
+        if(array_key_exists("goodid",$param)&&$param['goodid']!=""){
+            $bannerm=new Banner();
+            $bwhere['goodsid']=$param['goodid'];
+            $res=$bannerm->getList($bwhere);
+            return return_json($res);
+        }else{
+            return return_json_err("缺少必要参数",400);
+        }
+    }
 
 
 }

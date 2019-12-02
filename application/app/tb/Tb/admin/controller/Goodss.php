@@ -12,6 +12,7 @@ use app\app\tb\Attribute\common\model\Classgood;
 use app\app\tb\Attribute\common\model\Classify;
 use app\app\tb\Attribute\common\model\Goodattr;
 use app\app\tb\Attribute\common\model\Specs;
+use app\app\tb\Tb\common\model\Banner;
 use app\app\tb\Tb\common\model\Goods;
 use app\app\tb\Tb\common\model\Model;
 use think\Db;
@@ -58,7 +59,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      */
     public function addGoods() {
         $param=$this->param;
-        if(array_key_exists("goodsname",$param)&&$param['goodsname']!=""&&array_key_exists("classify",$param)&&$param['classify']!=""&&array_key_exists("price",$param)&&$param['price']!=""&&array_key_exists("title",$param)&&$param['title']!=""&&array_key_exists("description",$param)&&$param['description']!=""&&array_key_exists("content",$param)&&$param['content']!=""){
+        if(array_key_exists("banners",$param)&&$param['banners']!=""&&array_key_exists("goodsname",$param)&&$param['goodsname']!=""&&array_key_exists("classify",$param)&&$param['classify']!=""&&array_key_exists("price",$param)&&$param['price']!=""&&array_key_exists("title",$param)&&$param['title']!=""&&array_key_exists("description",$param)&&$param['description']!=""&&array_key_exists("content",$param)&&$param['content']!=""){
             $GoodM=new Goods();
             $gwhere['goodsname']=$param['goodsname'];
             $res=$GoodM->getDataItem($gwhere);
@@ -73,8 +74,21 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                             $GoodattrM=new Goodattr();
                             $res=$GoodattrM->insertAll($specsarray);
                             if($res){
-                                $this->commit();
-                                return return_json($re);
+                                if(!empty($param['banners'])){
+                                    $bannerM=new Banner();
+                                    $bannerdata=$this->BannerFormat($param['banners'],$re['result']['id']);
+                                    $res1=$bannerM->insertAll($bannerdata);
+                                    if($res1){
+                                        $this->commit();
+                                        return return_json($re);
+                                    }else{
+                                        $this->rollback();
+                                        return return_json_err("商品添加失败",400);
+                                    }
+                                }else{
+                                    $this->commit();
+                                    return return_json($re);
+                                }
                             }else{
                                 $this->rollback();
                                 return return_json_err("商品添加失败",400);
@@ -122,6 +136,22 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             }
         }
         return $back;
+    }
+    /**
+     *格式化数据 生成轮播图存储数据
+     */
+    public function BannerFormat($banner,$id){
+        $data=array();
+        $banner=json_decode($banner,true);
+        foreach ($banner as $key => $value){
+            $item=array();
+            if(array_key_exists("url",$value)&&$value['url']!=""){
+                $item['url']=$value['url'];
+                $item['goodsid']=$id;
+                array_push($data,$item);
+            }
+        }
+        return $data;
     }
     /**
      * 获取详情 通过id查询
@@ -327,7 +357,6 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             $gwhere[]=["id","=",$param['id']];
             $goodM=new Goods();
             $res=$goodM->getDataItem($gwhere);
-
             if(!empty($res['result'])){
                 if($res['result']['modelid']!=""&&$res['result']['modelid']!=0){
                     $nodelM=new Model();
@@ -449,21 +478,86 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      */
     public function FormatAttr($array)
     {
-        $result=array();
-        foreach ($array as $key => $value){
-            $item=array();
-            $item['id']="";
-            $item['name']="";
-            $item['namearray']=array();
-            foreach ($value as $k => $v){
-                $item['id'].=$v['id']."-";
-                $item['name'].=$v['name']."-";
-                array_push($item['namearray'],$v['name']);
+        $result = array();
+        foreach ($array as $key => $value) {
+            $item = array();
+            $item['id'] = "";
+            $item['name'] = "";
+            $item['namearray'] = array();
+            foreach ($value as $k => $v) {
+                $item['id'] .= $v['id'] . "-";
+                $item['name'] .= $v['name'] . "-";
+                array_push($item['namearray'], $v['name']);
             }
-            $item['id']=substr($item['id'],0,strlen($item['id'])-1);
-            $item['name']=substr($item['name'],0,strlen($item['name'])-1);
-            array_push($result,$item);
+            $item['id'] = substr($item['id'], 0, strlen($item['id']) - 1);
+            $item['name'] = substr($item['name'], 0, strlen($item['name']) - 1);
+            array_push($result, $item);
         }
-       return $result;
+        return $result;
+    }
+
+    /**
+     * 获取宣传图片 只生成二维码图片不生成宣传图片
+     * /app/admin/Tb.v1.Goodss.GetPublicityImg
+     * goodid 商品id
+     * bannerid  轮播图id
+     */
+    public function GetPublicityImg(){
+        $param=$this->param;
+        if(array_key_exists("id",$param)&&$param['id']!=""&&array_key_exists('bannerid',$param)&&$param['bannerid']!=""){
+            $res=$this->getItemById();
+            $res=json_decode($res->getContent(),true);
+            if(!empty($res['result'])){
+                if($res['result']['id']){
+                    if($res['result']['qrcode']==""){
+                        $url="http://www.baidu.com?".$param['id'];
+                        $res['result']['qrcode']=scerweima($url);
+                    }
+                    $modelM=new Model();
+                    $mwhere['id']=$res['result']['modelid'];
+                    $mres=$modelM->getDataItem($mwhere);
+                    $bannerM=new Banner();
+                    $bwhere['id']=$param['bannerid'];
+                    $bres=$bannerM->getDataItem($bwhere);
+                    if(!empty($mres['result'])&&!empty($bres['result'])){
+                        $config=json_decode($mres['result']['config'],true);
+                        if(strlen($res['result']['title'])>10){
+                            $config['text'][0]['text']=mb_substr($res['result']['title'],0,10);
+                            $config['text'][2]['text']=mb_substr($res['result']['title'],10,strlen($res['result']['title']))."...";
+                        }else{
+                            $config['text'][0]['text']=$res['result']['title']."...";
+                        }
+                        $config['text'][1]['text']="￥".$res['result']['price'];
+                        $config['image'][1]['url']=$res['result']['qrcode'];
+                        $config['image'][0]['url']=$bres['result']['url'];
+                        echo createPoster($config);
+                    }else{
+                        return return_json_err("生成失败",400);
+                    }
+                }else{
+                    return return_json_err("参数错误1",400);
+                }
+            }else{
+                return return_json_err("参数错误2",400);
+            }
+        }else{
+            return return_json_err("缺少必要参数3",400);
+        }
+    }
+    //图片上传
+    ///app/admin/Tb.v1.Goodss.UpfileImg
+    public function UpfileImg()
+    {
+        $file = request()->file('image');
+        $info = $file->move( '../../../../../public/Upload/Pic');
+        if($info){
+            $fileres=explode("\\",$info->getSaveName());
+            $res="http://".request()->host()."/Upload/".$fileres[0]."/".$fileres[1];
+            $data['url']=$res;
+            $data['bkurl']="/Upload/".$fileres[0]."/".$fileres[1];
+            return rjData($data);
+        }else{
+            return return_json_err("上传失败",400);
+        }
     }
 }
