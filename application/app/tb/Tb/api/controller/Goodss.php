@@ -241,6 +241,7 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
                 $specslist = $specssm->getList($swhere);
 //                print_r($specslist);
                 $item=array();
+                $itemprice=array();
                 if (!empty($specslist['result']['data'])) {
                     $attrim= new Attri();
                     foreach ($specslist['result']['data'] as $key => $value){
@@ -251,11 +252,14 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
                             if(!empty($attrlist['result']['data'])){
                                 $temp=array();
                                 foreach ($attrlist['result']['data'] as $k => $v){
+                                    $gawhere=[];
                                     $gawhere[]=['goodsid','=',$param['goodid']];
                                     $gawhere[]=['attribute','like',"%".$v['name']."%"];
                                     $gattrM=new Goodattr();
                                     $fattr=$gattrM->getItem($gawhere);
+                                    $timep[$value['id']][$v['id']]=$fattr;
                                     if(!empty($fattr['result'])){
+                                        array_push($itemprice,$timep);
                                         array_push($temp,$v);
                                     }
                                 }

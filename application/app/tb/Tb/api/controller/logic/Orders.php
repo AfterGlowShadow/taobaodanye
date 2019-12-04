@@ -83,6 +83,10 @@ class Orders extends ControllerCommon {
 		$number = isset($param['number']) ? $param['number'] : 0;
 		$typeid = isset($param['typeid']) ? $param['typeid'] : 0;
 		$delete_time = isset($param['delete_time']) ? $param['delete_time'] : 0;
+		$goodattrid = isset($param['goodattrid']) ? $param['goodattrid'] : 0;
+		$iszhekou = isset($param['iszhekou']) ? $param['iszhekou'] : 0;
+		$remark = isset($param['remark']) ? $param['remark'] : '';
+		$username = isset($param['username']) ? $param['username'] : '';
 
         /** @var $m Order */
         $m = $this->_model;
@@ -98,6 +102,10 @@ class Orders extends ControllerCommon {
 		isset($param['number']) && $_where[] = ['number', '=', $number];
 		isset($param['typeid']) && $_where[] = ['typeid', '=', $typeid];
 		isset($param['delete_time']) && $_where[] = ['delete_time', '=', $delete_time];
+		isset($param['goodattrid']) && $_where[] = ['goodattrid', '=', $goodattrid];
+		isset($param['iszhekou']) && $_where[] = ['iszhekou', '=', $iszhekou];
+		isset($param['remark']) && $_where[] = ['remark', '=', $remark];
+		isset($param['username']) && $_where[] = ['username', '=', $username];
 
 		$_order = ['create_time' => 'DESC'];
 
@@ -168,11 +176,15 @@ class Orders extends ControllerCommon {
 	 * productid		商品id
 	 * price			价格
 	 * pay_time			支付时间
-	 * status			支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败
+	 * status			支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败 5退款
 	 * ordersn			订单编号
 	 * orderoutsn		外部订单编号
 	 * number			购买产品数量
 	 * typeid			产品类型id
+	 * goodattrid		商品属性中间表id
+	 * iszhekou			是否打折0为不打折 1为打折
+	 * remark			备注下单时的所有信息
+	 * username			收件人姓名
 	 * @return mixed|string
 	 */
 	public function add() {
@@ -190,6 +202,10 @@ class Orders extends ControllerCommon {
 		$orderoutsn = isset($param['orderoutsn']) ? $param['orderoutsn'] : '';
 		$number = isset($param['number']) ? $param['number'] : 0;
 		$typeid = isset($param['typeid']) ? $param['typeid'] : 0;
+		$goodattrid = isset($param['goodattrid']) ? $param['goodattrid'] : 0;
+		$iszhekou = isset($param['iszhekou']) ? $param['iszhekou'] : 0;
+		$remark = isset($param['remark']) ? $param['remark'] : '';
+		$username = isset($param['username']) ? $param['username'] : '';
 		
 		$_data = [];
 		$_data['phone'] = $phone;
@@ -202,6 +218,10 @@ class Orders extends ControllerCommon {
 		$_data['orderoutsn'] = $orderoutsn;
 		$_data['number'] = $number;
 		$_data['typeid'] = $typeid;
+		$_data['goodattrid'] = $goodattrid;
+		$_data['iszhekou'] = $iszhekou;
+		$_data['remark'] = $remark;
+		$_data['username'] = $username;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -227,11 +247,15 @@ class Orders extends ControllerCommon {
 	 * productid		商品id
 	 * price			价格
 	 * pay_time			支付时间
-	 * status			支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败
+	 * status			支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败 5退款
 	 * ordersn			订单编号
 	 * orderoutsn		外部订单编号
 	 * number			购买产品数量
 	 * typeid			产品类型id
+	 * goodattrid		商品属性中间表id
+	 * iszhekou			是否打折0为不打折 1为打折
+	 * remark			备注下单时的所有信息
+	 * username			收件人姓名
 	 * @return mixed|string
 	 */
 	public function edit() {
@@ -250,6 +274,10 @@ class Orders extends ControllerCommon {
 		$orderoutsn = isset($param['orderoutsn']) ? $param['orderoutsn'] : '';
 		$number = isset($param['number']) ? $param['number'] : 0;
 		$typeid = isset($param['typeid']) ? $param['typeid'] : 0;
+		$goodattrid = isset($param['goodattrid']) ? $param['goodattrid'] : 0;
+		$iszhekou = isset($param['iszhekou']) ? $param['iszhekou'] : 0;
+		$remark = isset($param['remark']) ? $param['remark'] : '';
+		$username = isset($param['username']) ? $param['username'] : '';
 		
 		$_data = [];
 		isset($param['phone']) && $_data['phone'] = $phone;
@@ -262,6 +290,10 @@ class Orders extends ControllerCommon {
 		isset($param['orderoutsn']) && $_data['orderoutsn'] = $orderoutsn;
 		isset($param['number']) && $_data['number'] = $number;
 		isset($param['typeid']) && $_data['typeid'] = $typeid;
+		isset($param['goodattrid']) && $_data['goodattrid'] = $goodattrid;
+		isset($param['iszhekou']) && $_data['iszhekou'] = $iszhekou;
+		isset($param['remark']) && $_data['remark'] = $remark;
+		isset($param['username']) && $_data['username'] = $username;
 		$re = $m->editById($id, $_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -302,7 +334,7 @@ class Orders extends ControllerCommon {
 	 * @api_url /app/api/Tb.v1.Orders.setStatus
 	 *
 	 * id				
-	 * status			支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败
+	 * status			支付状态0未支付 1支付成功 2支付中 3待审核 4支付失败 5退款
 	 * @return mixed|string
 	 */
 	public function setStatus() {

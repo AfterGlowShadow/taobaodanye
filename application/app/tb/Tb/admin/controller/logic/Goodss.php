@@ -76,9 +76,11 @@ class Goodss extends ControllerCommon {
 		$title = isset($param['title']) ? $param['title'] : '';
 		$description = isset($param['description']) ? $param['description'] : '';
 		$content = isset($param['content']) ? $param['content'] : '';
-		$modelid = isset($param['modelid']) ? $param['modelid'] : '';
+		$modelid = isset($param['modelid']) ? $param['modelid'] : 0;
 		$delete_time = isset($param['delete_time']) ? $param['delete_time'] : 0;
 		$classify = isset($param['classify']) ? $param['classify'] : 0;
+		$qrcode = isset($param['qrcode']) ? $param['qrcode'] : '';
+		$imgspecs = isset($param['imgspecs']) ? $param['imgspecs'] : 0;
 
         /** @var $m Goods */
         $m = $this->_model;
@@ -91,6 +93,8 @@ class Goodss extends ControllerCommon {
 		isset($param['modelid']) && $_where[] = ['modelid', '=', $modelid];
 		isset($param['delete_time']) && $_where[] = ['delete_time', '=', $delete_time];
 		isset($param['classify']) && $_where[] = ['classify', '=', $classify];
+		isset($param['qrcode']) && $_where[] = ['qrcode', '=', $qrcode];
+		isset($param['imgspecs']) && $_where[] = ['imgspecs', '=', $imgspecs];
 
 		$_order = ['create_time' => 'DESC'];
 
@@ -163,6 +167,8 @@ class Goodss extends ControllerCommon {
 	 * content			详情
 	 * modelid			宣传模型id
 	 * classify			商品分类id
+	 * qrcode			二维码图片地址
+	 * imgspecs			带图片规格id
 	 * @return mixed|string
 	 */
 	public function add() {
@@ -175,8 +181,10 @@ class Goodss extends ControllerCommon {
 		$title = isset($param['title']) ? $param['title'] : '';
 		$description = isset($param['description']) ? $param['description'] : '';
 		$content = isset($param['content']) ? $param['content'] : '';
-		$modelid = isset($param['modelid']) ? $param['modelid'] : '';
+		$modelid = isset($param['modelid']) ? $param['modelid'] : 0;
 		$classify = isset($param['classify']) ? $param['classify'] : 0;
+		$qrcode = isset($param['qrcode']) ? $param['qrcode'] : '';
+		$imgspecs = isset($param['imgspecs']) ? $param['imgspecs'] : 0;
 		
 		$_data = [];
 		$_data['goodsname'] = $goodsname;
@@ -186,6 +194,8 @@ class Goodss extends ControllerCommon {
 		$_data['content'] = $content;
 		$_data['modelid'] = $modelid;
 		$_data['classify'] = $classify;
+		$_data['qrcode'] = $qrcode;
+		$_data['imgspecs'] = $imgspecs;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -213,6 +223,8 @@ class Goodss extends ControllerCommon {
 	 * content			详情
 	 * modelid			宣传模型id
 	 * classify			商品分类id
+	 * qrcode			二维码图片地址
+	 * imgspecs			带图片规格id
 	 * @return mixed|string
 	 */
 	public function edit() {
@@ -226,8 +238,10 @@ class Goodss extends ControllerCommon {
 		$title = isset($param['title']) ? $param['title'] : '';
 		$description = isset($param['description']) ? $param['description'] : '';
 		$content = isset($param['content']) ? $param['content'] : '';
-		$modelid = isset($param['modelid']) ? $param['modelid'] : '';
+		$modelid = isset($param['modelid']) ? $param['modelid'] : 0;
 		$classify = isset($param['classify']) ? $param['classify'] : 0;
+		$qrcode = isset($param['qrcode']) ? $param['qrcode'] : '';
+		$imgspecs = isset($param['imgspecs']) ? $param['imgspecs'] : 0;
 		
 		$_data = [];
 		isset($param['goodsname']) && $_data['goodsname'] = $goodsname;
@@ -237,6 +251,8 @@ class Goodss extends ControllerCommon {
 		isset($param['content']) && $_data['content'] = $content;
 		isset($param['modelid']) && $_data['modelid'] = $modelid;
 		isset($param['classify']) && $_data['classify'] = $classify;
+		isset($param['qrcode']) && $_data['qrcode'] = $qrcode;
+		isset($param['imgspecs']) && $_data['imgspecs'] = $imgspecs;
 		$re = $m->editById($id, $_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);

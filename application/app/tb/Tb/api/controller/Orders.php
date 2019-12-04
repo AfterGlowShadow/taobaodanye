@@ -7,6 +7,7 @@
 
 namespace app\app\tb\Tb\api\controller;
 
+use app\app\tb\Attribute\common\model\Goodattr;
 use app\app\tb\Tb\common\model\Order;
 use app\sys\com\Pay\admin\controller\Payments;
 use app\sys\com\Pay\common\model\Payment;
@@ -55,13 +56,37 @@ class Orders extends \app\app\tb\Tb\api\controller\logic\Orders {
      */
     public function addM() {
         $Pay=new AliPay();
-        $param['out_trade_no']="fdsafsafs";
-        $param['total_amount']="12";
-        $param['subject']="fdsafdsa";
-        $param['terminal_type']="wap";
-        echo"tian";
-        print_r($Pay->pay($param));
-    }
+        $param=$this->param;
+        if(array_key_exists('username',$param)&&$param['username']!=""&&array_key_exists('phone',$param)&&$param['phone']!=""&&array_key_exists('address',$param)&&$param['address']!=""&&array_key_exists('guigeid',$param)&&$param['guigeid']!=""&&array_key_exists('nmber',$param['number'])){
+            $param['number']=isset($param['number'])? $param['number']:0;
+            //计算订单价格
+            $goodattrM=new Goodattr();
+            $where['id']=$param['guigeid'];
+            $goodattr=$goodattrM->getDataItem($where);
+            if(!empty($goodattr['result'])){
+                if($goodattr['result']['pricetype']==0){
+                    $param['price']=$goodattr['result']['price']/100*$param['number'];
+                }else{
+                    $param['price']=$goodattr['result']['zprice']/100*$param['number'];
+                }
+                $param['goodattrid']=$param['guigeid'];
+                $param['productid']=$goodattr['result']['goodsid'];
 
+            }
+            //规格删除后 属性也要一并删除 以免现在添加商品时 添加上已经取消了的货物
+            $param['status']=0;
+            $param['ordersn']=date("YmdHis",time()).createCode(8);
+            $param['orderoutsn']=md5($param['ordersn']);
+            $this->param=$param;
+            $res=parent::add();
+            $res=json_decode($res->getContent(),true);
+            $url='http://192.168.1.122/index.php?n='.$param['price'].'&b='.$param['username'];  //需改
+            $url_val=urlencode(mb_convert_encoding("$url", 'utf-8'))."\n";
+            $url_='alipays://platformapi/startapp?saId=10000007&qrcode='.$url_val;
+            return redirect($url_);
+        }else{
+            return return_json_err("缺少必要参数",400);
+        }
+    }
 
 }

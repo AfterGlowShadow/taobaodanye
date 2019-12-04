@@ -20,6 +20,8 @@ class Model extends Validate {
 		'name' => 'require|unique:app_tb_model,name',
 		'url' => 'require',
 		'field' => 'require',
+		'config' => 'require',
+		'function' => 'require',
 
 	];
     
@@ -34,11 +36,13 @@ class Model extends Validate {
 		'name.unique' => '“”已存在',
 		'url.require' => '“”必须填写',
 		'field.require' => '“所用商品表字段”必须填写',
+		'config.require' => '“配置信息”必须填写',
+		'function.require' => '“请求方法”必须填写',
 
     ];
 
 	protected $scene = [
-		'add'  => ["name", "url", "field"],
-		'edit' => ["name", "url", "field"],
+		'add'  => ["name", "url", "field", "config", "function"],
+		'edit' => ["name", "url", "field", "config", "function"],
 	];
 }

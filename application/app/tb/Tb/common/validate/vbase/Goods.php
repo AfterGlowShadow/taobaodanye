@@ -24,6 +24,8 @@ class Goods extends Validate {
 		'content' => 'require',
 		'modelid' => 'require',
 		'classify' => 'require',
+		'qrcode' => 'require',
+		'imgspecs' => 'require',
 
 	];
     
@@ -41,11 +43,13 @@ class Goods extends Validate {
 		'content.require' => '“详情”必须填写',
 		'modelid.require' => '“宣传模型id”必须填写',
 		'classify.require' => '“商品分类id”必须填写',
+		'qrcode.require' => '“二维码图片地址”必须填写',
+		'imgspecs.require' => '“带图片规格id”必须填写',
 
     ];
 
 	protected $scene = [
-		'add'  => ["goodsname", "price", "title", "description", "content", "modelid", "classify"],
-		'edit' => ["goodsname", "price", "title", "description", "content", "modelid", "classify"],
+		'add'  => ["goodsname", "price", "title", "description", "content", "modelid", "classify", "qrcode", "imgspecs"],
+		'edit' => ["goodsname", "price", "title", "description", "content", "modelid", "classify", "qrcode", "imgspecs"],
 	];
 }

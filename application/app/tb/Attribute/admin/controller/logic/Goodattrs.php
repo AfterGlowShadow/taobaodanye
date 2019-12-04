@@ -77,6 +77,9 @@ class Goodattrs extends ControllerCommon {
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
 		$pricetype = isset($param['pricetype']) ? $param['pricetype'] : 0;
+		$attrid = isset($param['attrid']) ? $param['attrid'] : 0;
+		$delete_time = isset($param['delete_time']) ? $param['delete_time'] : 0;
+		$specsid = isset($param['specsid']) ? $param['specsid'] : 0;
 
         /** @var $m Goodattr */
         $m = $this->_model;
@@ -87,8 +90,11 @@ class Goodattrs extends ControllerCommon {
 		isset($param['zprice']) && $_where[] = ['zprice', '=', $zprice];
 		isset($param['img']) && $_where[] = ['img', '=', $img];
 		isset($param['pricetype']) && $_where[] = ['pricetype', '=', $pricetype];
+		isset($param['attrid']) && $_where[] = ['attrid', '=', $attrid];
+		isset($param['delete_time']) && $_where[] = ['delete_time', '=', $delete_time];
+		isset($param['specsid']) && $_where[] = ['specsid', '=', $specsid];
 
-		$_order = [];
+		$_order = ['create_time' => 'DESC'];
 
         $_field = isset($this->_buf['getList']['field']) ? $this->_buf['getList']['field'] : '*';
         $_link = isset($this->_buf['getList']['link']) ? $this->_buf['getList']['link'] : false;
@@ -158,6 +164,8 @@ class Goodattrs extends ControllerCommon {
 	 * zprice			折扣价格
 	 * img				图片地址
 	 * pricetype		折扣还是不折扣(0为不折扣1为折扣)
+	 * attrid			属性id
+	 * specsid			规格id
 	 * @return mixed|string
 	 */
 	public function add() {
@@ -171,6 +179,8 @@ class Goodattrs extends ControllerCommon {
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
 		$pricetype = isset($param['pricetype']) ? $param['pricetype'] : 0;
+		$attrid = isset($param['attrid']) ? $param['attrid'] : 0;
+		$specsid = isset($param['specsid']) ? $param['specsid'] : 0;
 		
 		$_data = [];
 		$_data['goodsid'] = $goodsid;
@@ -179,6 +189,8 @@ class Goodattrs extends ControllerCommon {
 		$_data['zprice'] = $zprice;
 		$_data['img'] = $img;
 		$_data['pricetype'] = $pricetype;
+		$_data['attrid'] = $attrid;
+		$_data['specsid'] = $specsid;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -205,6 +217,8 @@ class Goodattrs extends ControllerCommon {
 	 * zprice			折扣价格
 	 * img				图片地址
 	 * pricetype		折扣还是不折扣(0为不折扣1为折扣)
+	 * attrid			属性id
+	 * specsid			规格id
 	 * @return mixed|string
 	 */
 	public function edit() {
@@ -219,6 +233,8 @@ class Goodattrs extends ControllerCommon {
 		$zprice = isset($param['zprice']) ? $param['zprice'] : 0;
 		$img = isset($param['img']) ? $param['img'] : '';
 		$pricetype = isset($param['pricetype']) ? $param['pricetype'] : 0;
+		$attrid = isset($param['attrid']) ? $param['attrid'] : 0;
+		$specsid = isset($param['specsid']) ? $param['specsid'] : 0;
 		
 		$_data = [];
 		isset($param['goodsid']) && $_data['goodsid'] = $goodsid;
@@ -227,6 +243,8 @@ class Goodattrs extends ControllerCommon {
 		isset($param['zprice']) && $_data['zprice'] = $zprice;
 		isset($param['img']) && $_data['img'] = $img;
 		isset($param['pricetype']) && $_data['pricetype'] = $pricetype;
+		isset($param['attrid']) && $_data['attrid'] = $attrid;
+		isset($param['specsid']) && $_data['specsid'] = $specsid;
 		$re = $m->editById($id, $_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -253,6 +271,7 @@ class Goodattrs extends ControllerCommon {
     public function delete() {
         return parent::delete();
     }
+
 
 
 }

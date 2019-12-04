@@ -75,6 +75,8 @@ class Models extends ControllerCommon {
 		$url = isset($param['url']) ? $param['url'] : '';
 		$delete_time = isset($param['delete_time']) ? $param['delete_time'] : 0;
 		$field = isset($param['field']) ? $param['field'] : '';
+		$config = isset($param['config']) ? $param['config'] : '';
+		$function = isset($param['function']) ? $param['function'] : '';
 
         /** @var $m Model */
         $m = $this->_model;
@@ -83,6 +85,8 @@ class Models extends ControllerCommon {
 		isset($param['url']) && $_where[] = ['url', '=', $url];
 		isset($param['delete_time']) && $_where[] = ['delete_time', '=', $delete_time];
 		isset($param['field']) && $_where[] = ['field', '=', $field];
+		isset($param['config']) && $_where[] = ['config', '=', $config];
+		isset($param['function']) && $_where[] = ['function', '=', $function];
 
 		$_order = ['create_time' => 'DESC'];
 
@@ -151,6 +155,8 @@ class Models extends ControllerCommon {
 	 * name				
 	 * url				
 	 * field			所用商品表字段
+	 * config			配置信息
+	 * function			请求方法
 	 * @return mixed|string
 	 */
 	public function add() {
@@ -161,11 +167,15 @@ class Models extends ControllerCommon {
 		$name = isset($param['name']) ? $param['name'] : '';
 		$url = isset($param['url']) ? $param['url'] : '';
 		$field = isset($param['field']) ? $param['field'] : '';
+		$config = isset($param['config']) ? $param['config'] : '';
+		$function = isset($param['function']) ? $param['function'] : '';
 		
 		$_data = [];
 		$_data['name'] = $name;
 		$_data['url'] = $url;
 		$_data['field'] = $field;
+		$_data['config'] = $config;
+		$_data['function'] = $function;
 		$re = $m->add($_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);
@@ -189,6 +199,8 @@ class Models extends ControllerCommon {
 	 * name				
 	 * url				
 	 * field			所用商品表字段
+	 * config			配置信息
+	 * function			请求方法
 	 * @return mixed|string
 	 */
 	public function edit() {
@@ -200,11 +212,15 @@ class Models extends ControllerCommon {
 		$name = isset($param['name']) ? $param['name'] : '';
 		$url = isset($param['url']) ? $param['url'] : '';
 		$field = isset($param['field']) ? $param['field'] : '';
+		$config = isset($param['config']) ? $param['config'] : '';
+		$function = isset($param['function']) ? $param['function'] : '';
 		
 		$_data = [];
 		isset($param['name']) && $_data['name'] = $name;
 		isset($param['url']) && $_data['url'] = $url;
 		isset($param['field']) && $_data['field'] = $field;
+		isset($param['config']) && $_data['config'] = $config;
+		isset($param['function']) && $_data['function'] = $function;
 		$re = $m->editById($id, $_data);
 		if (!is_return_ok($re)) {
 			return return_json($re);

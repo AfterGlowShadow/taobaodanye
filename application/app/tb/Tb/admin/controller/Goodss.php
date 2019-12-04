@@ -134,7 +134,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                 $value1['attribute']=$value['attribute'];
                 $value1['goodsid']=$id;
                 $value1['attrid']=$value['id'];
-                $value1['price']=$value['price']/100;
+                $value1['price']=bcmul($value['price'],100,0);;
                 array_push( $back,$value1);
             }
         }
@@ -222,6 +222,9 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             $re = $GoodattrM->getList($wherea);
             if (!empty($re['result']['data'])) {
                 $res['result']['specs'] = $re['result']['data'];
+                foreach ($res['result']['specs'] as $key => $value){
+                    $res['result']['specs'][$key]['price']=bcdiv($value['price'],100,2);
+                }
             } else {
                 $res['result']['specs'] =array();
             }
