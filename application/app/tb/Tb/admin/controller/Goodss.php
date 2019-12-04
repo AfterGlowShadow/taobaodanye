@@ -59,6 +59,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      */
     public function addGoods() {
         $param=$this->param;
+
         if(array_key_exists("banners",$param)&&$param['banners']!=""&&array_key_exists("goodsname",$param)&&$param['goodsname']!=""&&array_key_exists("classify",$param)&&$param['classify']!=""&&array_key_exists("price",$param)&&$param['price']!=""&&array_key_exists("title",$param)&&$param['title']!=""&&array_key_exists("description",$param)&&$param['description']!=""&&array_key_exists("content",$param)&&$param['content']!=""){
             $GoodM=new Goods();
             $gwhere['goodsname']=$param['goodsname'];
@@ -74,9 +75,11 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                             $GoodattrM=new Goodattr();
                             $res=$GoodattrM->insertAll($specsarray);
                             if($res){
+
                                 if(!empty($param['banners'])){
                                     $bannerM=new Banner();
                                     $bannerdata=$this->BannerFormat($param['banners'],$re['result']['id']);
+
                                     $res1=$bannerM->insertAll($bannerdata);
                                     if($res1){
                                         $this->commit();
@@ -94,8 +97,8 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                                 return return_json_err("商品添加失败",400);
                             }
                         }else{
-                            $this->commit();
-                            return return_json($re);
+                            $this->rollback();
+                            return return_json_err("必须填写规格",400);
                         }
                     }else{
                         $this->commit();
@@ -126,12 +129,12 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
         $data=json_decode($data,true);
         $back=array();
         foreach ($data as $key => $value){
-            if(array_key_exists("price",$value)&&$value['price']!=""&&array_key_exists("name",$value)&&$value['name']!=""&&array_key_exists("id",$value)&&$value['id']!=""){
+            if(array_key_exists("price",$value)&&$value['price']!=""&&array_key_exists("attribute",$value)&&$value['attribute']!=""&&array_key_exists("id",$value)&&$value['id']!=""){
                 $value1['pricetype']=isset($value['pricetype']) ? $value['pricetype'] : 0;
-                $value1['attribute']=$value['name'];
+                $value1['attribute']=$value['attribute'];
                 $value1['goodsid']=$id;
                 $value1['attrid']=$value['id'];
-                $value1['price']=$value['price'];
+                $value1['price']=$value['price']/100;
                 array_push( $back,$value1);
             }
         }
@@ -143,15 +146,15 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
     public function BannerFormat($banner,$id){
         $data=array();
         $banner=json_decode($banner,true);
-//        foreach ($banner as $key => $value){
-//            $item=array();
+        foreach ($banner as $key => $value){
+            $item=array();
 //            if(array_key_exists("url",$value)&&$value['url']!=""){
-//                $item['url']=$value['url'];
-//                $item['goodsid']=$id;
-//                array_push($data,$item);
+                $item['url']=$value;
+                $item['goodsid']=$id;
+                array_push($data,$item);
 //            }
-//        }
-        return $banner;
+        }
+        return $data;
     }
     /**
      * 获取详情 通过id查询
@@ -275,6 +278,16 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             }else{
                 $res['result']['data'][$key]['modelidname']="未知";
             }
+            $bannerm=new Banner();
+            $bwhere['goodsid']=$value['id'];
+            $bwhere['delete_time']=0;
+            $bannerl=$bannerm->getList($bwhere);
+            $res['result']['data'][$key]['banner']=array();
+            if(!empty($bannerl['result']['data'])){
+                foreach ($bannerl['result']['data'] as $k => $v){
+                    array_push($res['result']['data'][$key]['banner'],$v['url']);
+                }
+            }
             $res['result']['data'][$key]['create_time']=date("Y-m-d H:i:s",$value['create_time']);
         }
         return return_json($res);
@@ -303,11 +316,12 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
      * @throws \think\exception\PDOException
      */
     public function editM() {
+
         $param=$this->param;
         if(array_key_exists("banners",$param)&&$param['banners']!=""&&array_key_exists("goodsname",$param)&&$param['goodsname']!=""&&array_key_exists("id",$param)&&$param['id']!=""&&array_key_exists("classify",$param)&&$param['classify']!=""&&array_key_exists("price",$param)&&$param['price']!=""&&array_key_exists("title",$param)&&$param['title']!=""&&array_key_exists("description",$param)&&$param['description']!=""&&array_key_exists("content",$param)&&$param['content']!=""){
             $GoodM=new Goods();
-            $gwhere[]=["goodsname",'=',$param['goodsname']];
-            $gwhere[]=['id',"!=",$param['id']];
+            $gwhere[]=['goodsname','=',$param['goodsname']];
+            $gwhere[]=['id','<>',$param['id']];
             $res=$GoodM->getDataItem($gwhere);
             if(empty($res['result'])){
                 $this->startTrans();
@@ -319,14 +333,18 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                         if(!empty($specsarray)){
                             $GoodattrM=new Goodattr();
                             $gawhere['goodsid']=$param['id'];
-                            $res1=$GoodattrM->where($gawhere)->delete();
-                            $res=$GoodattrM->insertAll($specsarray);
+                            $GoodattrM->where($gawhere)->delete();
+                            $res4=$GoodattrM->insertAll($specsarray);
                             $bannerM=new Banner();
-                            $bdwhere['goodsid']=$re['result']['id'];
-                            $res3=$bannerM->where($bdwhere)->delete();
-                            $bannerdata=$this->BannerFormat($param['banners'],$re['result']['id']);
-                            $res2=$bannerM->insertAll($bannerdata);
-                            if($res&&$res1&&$res2&&$res3){
+                            $bdwhere['goodsid']=$param['id'];
+                            $bannerM->where($bdwhere)->delete();
+                            $bannerdata=$this->BannerFormat($param['banners'],$param['id']);
+                            if(!empty($bannerdata)){
+                                $res2=$bannerM->insertAll($bannerdata);
+                            }else{
+                                $res2=true;
+                            }
+                            if($res4&&$res2){
                                 $this->commit();
                                 return return_json($re);
                             }else{
@@ -497,15 +515,15 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
         foreach ($array as $key => $value) {
             $item = array();
             $item['id'] = "";
-            $item['name'] = "";
+            $item['attribute'] = "";
             $item['namearray'] = array();
             foreach ($value as $k => $v) {
                 $item['id'] .= $v['id'] . "-";
-                $item['name'] .= $v['name'] . "-";
+                $item['attribute'] .= $v['name'] . "-";
                 array_push($item['namearray'], $v['name']);
             }
             $item['id'] = substr($item['id'], 0, strlen($item['id']) - 1);
-            $item['name'] = substr($item['name'], 0, strlen($item['name']) - 1);
+            $item['attribute'] = substr($item['attribute'], 0, strlen($item['attribute']) - 1);
             array_push($result, $item);
         }
         return $result;

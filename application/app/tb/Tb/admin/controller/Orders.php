@@ -299,9 +299,9 @@ class Orders extends \app\app\tb\Tb\admin\controller\logic\Orders {
             $param['status']=0;
             $param['ordersn']=date("YmdHis",time()).createCode(8);
             $param['orderoutsn']=md5($param['ordersn']);
-            $param['total_amount']="12";
-            $param['subject']="fdsafdsa";
-            $param['terminal_type']="web";
+//            $param['total_amount']="12";
+//            $param['subject']="fdsafdsa";
+//            $param['terminal_type']="web";
             $this->param=$param;
             $res=parent::add();
             $res=json_decode($res->getContent(),true);

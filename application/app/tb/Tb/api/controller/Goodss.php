@@ -11,6 +11,7 @@ use app\app\tb\Attribute\common\model\Attri;
 use app\app\tb\Attribute\common\model\Classify;
 use app\app\tb\Attribute\common\model\Goodattr;
 use app\app\tb\Attribute\common\model\Specs;
+use app\app\tb\Tb\common\model\Banner;
 use app\app\tb\Tb\common\model\Goods;
 use app\app\tb\Tb\common\model\Model;
 use think\Db;
@@ -83,6 +84,16 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
             }else{
                 $res['result']['modelidname']="未知";
             }
+            $bannerm=new Banner();
+            $bwhere['goodsid']=$res['result']['id'];
+            $bwhere['delete_time']=0;
+            $bannerl=$bannerm->getList($bwhere);
+            $res['result']['banner']=array();
+            if(!empty($bannerl['result']['data'])){
+                foreach ($bannerl['result']['data'] as $key => $value){
+                    array_push($res['result']['banner'],$value['url']);
+                }
+            }
             $GoodattrM = new Goodattr();
             $wherea['goodsid'] = $res['result']['id'];
             $wherea['delete_time'] = 0;
@@ -144,6 +155,16 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
                 $res['result']['data'][$key]=$value;
             }else{
                 $res['result']['data'][$key]['modelidname']="未知";
+            }
+            $bannerm=new Banner();
+            $bwhere['goodsid']=$value['id'];
+            $bwhere['delete_time']=0;
+            $bannerl=$bannerm->getList($bwhere);
+            $res['result']['data'][$key]['banner']=array();
+            if(!empty($bannerl['result']['data'])){
+                foreach ($bannerl['result']['data'] as $k => $v){
+                    array_push($res['result']['data'][$key]['banner'],$v['url']);
+                }
             }
             $res['result']['data'][$key]['create_time']=date("Y-m-d H:i:s",$value['create_time']);
         }
@@ -209,7 +230,7 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
      */
     public function AttrisArray() {
         $param=$this->param;
-        if(array_key_exists("id",$param)){
+        if(array_key_exists("id",$param)&&array_key_exists("goodid",$param)){
             $classify=new Classify();
             $cwhere['id']=$param['id'];
             $classinfo=$classify->getDataItem($cwhere);
@@ -218,6 +239,7 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
                 $specssm = new Specs();
                 $swhere['classifyid'] = $classinfo['result']['id'];
                 $specslist = $specssm->getList($swhere);
+//                print_r($specslist);
                 $item=array();
                 if (!empty($specslist['result']['data'])) {
                     $attrim= new Attri();
@@ -227,15 +249,35 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
                         if(!empty($attrlist['result'])){
                             $specslist['result']['data'][$key]['attr']=$attrlist['result'];
                             if(!empty($attrlist['result']['data'])){
-                                array_push($item,$attrlist['result']['data']);
+                                $temp=array();
+                                foreach ($attrlist['result']['data'] as $k => $v){
+                                    $gawhere[]=['goodsid','=',$param['goodid']];
+                                    $gawhere[]=['attribute','like',"%".$v['name']."%"];
+                                    $gattrM=new Goodattr();
+                                    $fattr=$gattrM->getItem($gawhere);
+                                    if(!empty($fattr['result'])){
+                                        array_push($temp,$v);
+                                    }
+                                }
+                                if($temp){
+                                    $temp1=array();
+                                    $temp1['name']=$value['name'];
+                                    $temp1['data']=$temp;
+//                                $attrlist['result']['data']['specsname']=$value['name'];
+//                                array_push($item,$attrlist['result']['data']);
+                                    array_push($item,$temp1);
+                                }
                             }
                         }
                     }
+//                    exit;
 //                    print_r($this->myFormatAttr($item,count($item)-1));
 //                    exit;
-                    $item=$this->combination($item);
-                    $back=$this->FormatAttr($item);
-                    $classinfo['result']['attr']=$back;
+//                    $item=$this->combination($item);
+//                    $back=$this->FormatAttr($item);
+//                    print_r($item);
+//                    exit;
+                    $classinfo['result']['attr']=$item;
                     return rjData($classinfo);
                 }else{
                     $classinfo['result']['attr']=array();
@@ -247,5 +289,63 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
         }else{
             return return_json_err("缺少必要参数",400);
         }
+    }
+    /**
+     * 生成属性的排列组合列表
+     * array数组
+     * length数组长度
+     * page当前数据执行到第几个
+     * backarray返回的整合数组
+     * npage数组内部执行到第几个
+     */
+    function combination(array $options)
+    {
+        $rows = [];
+        foreach ($options as $option => $items) {
+            if (count($rows) > 0) {
+                // 2、将第一列作为模板
+                $clone = $rows;
+                // 3、置空当前列表，因为只有第一列的数据，组合是不完整的
+                $rows = [];
+                // 4、遍历当前列，追加到模板中，使模板中的组合变得完整
+                foreach ($items as $item) {
+                    $tmp = $clone;
+                    foreach ($tmp as $index => $value) {
+                        $value[$option] = $item;
+                        $tmp[$index] = $value;
+                    }
+                    // 5、将完整的组合拼回原列表中
+                    $rows = array_merge($rows, $tmp);
+                }
+            } else {
+                // 1、先计算出第一列
+                foreach ($items as $item) {
+                    $rows[][$option] = $item;
+                }
+            }
+        }
+        return $rows;
+    }
+    /**
+     * 对组合后的属性进行格式化 格式为1-2-3 array(name1 name2 name3)
+     */
+    public function FormatAttr($array)
+    {
+        $result = array();
+        foreach ($array as $key => $value) {
+            $item = array();
+            $item['id'] = "";
+            $item['attribute'] = "";
+            $item['namearray'] = array();
+            foreach ($value as $k => $v) {
+                $item['id'] .= $v['id'] . "-";
+                $item['attribute'] .= $v['name'] . "-";
+                array_push($item['namearray'], $v['name']);
+            }
+            $item['id'] = substr($item['id'], 0, strlen($item['id']) - 1);
+            $item['attribute'] = substr($item['attribute'], 0, strlen($item['attribute']) - 1);
+            array_push($result, $item);
+        }
+        return $result;
     }
 }
