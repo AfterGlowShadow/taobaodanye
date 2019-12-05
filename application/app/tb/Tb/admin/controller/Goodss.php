@@ -546,16 +546,17 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             if(!empty($res['result'])){
                 if($res['result']['id']){
                     if($res['result']['qrcode']==""){
-                        $url="http://www.baidu.com?".$param['id'];
+                        $url="http://shuerte.hbweipai.com/home/details.html?id=".$param['id'];
                         $res['result']['qrcode']=scerweima($url);
                     }
                     $modelM=new Model();
                     $mwhere['id']=$res['result']['modelid'];
                     $mres=$modelM->getDataItem($mwhere);
-                    $bannerM=new Banner();
-                    $bwhere['id']=$param['bannerid'];
-                    $bres=$bannerM->getDataItem($bwhere);
-                    if(!empty($mres['result'])&&!empty($bres['result'])){
+//                    $bannerM=new Banner();
+//                    $bwhere['id']=$param['bannerid'];
+//                    $bres=$bannerM->getDataItem($bwhere);
+                    $brespath="../public".$param['bannerid'];
+                    if(file_exists($brespath)){
                         $config=json_decode($mres['result']['config'],true);
                         if(strlen($res['result']['title'])>10){
                             $config['text'][0]['text']=mb_substr($res['result']['title'],0,10);
@@ -565,7 +566,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                         }
                         $config['text'][1]['text']="￥".$res['result']['price'];
                         $config['image'][1]['url']=$res['result']['qrcode'];
-                        $config['image'][0]['url']=$bres['result']['url'];
+                        $config['image'][0]['url']=$brespath;
                         echo createPoster($config);
                     }else{
                         return return_json_err("生成失败",400);

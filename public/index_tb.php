@@ -47,11 +47,11 @@ define('DATEBASE_CONFIG', [
     // 服务器地址
     'hostname'        => '127.0.0.1',
     // 数据库名
-    'database'        => 'tb_fangtaobao',
+    'database'        => 'taobaofang',
     // 用户名
-    'username'        => 'root',
+    'username'        => 'taobaofang',
     // 密码
-    'password'        => 'root',
+    'password'        => 'c81N1cZ4WZA3F60j0hL',
     // 端口
     'hostport'        => '3306',
     // 数据库表前缀

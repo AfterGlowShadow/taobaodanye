@@ -54,6 +54,8 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
         $res=parent::getItemById();
         $res=json_decode($res->getContent(),true);
         if(!empty($res['result'])){
+//            print_r($res['result']);
+            $res['result']['price']=bcdiv($res['result']['price'],100,2);
             if(array_key_exists("classify",$res['result'])&&$res['result']['classify']!=""&&$res['result']['classify']!=0){
                 $classM=new Classify();
                 $where['id']=$res['result']['classify'];
@@ -234,7 +236,7 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
             $classify=new Classify();
             $cwhere['id']=$param['id'];
             $classinfo=$classify->getDataItem($cwhere);
-            $classinfo['attrlist']=array();
+//            $classinfo['attrlist']=array();
             if(!empty($classinfo['result'])) {
                 $specssm = new Specs();
                 $swhere['classifyid'] = $classinfo['result']['id'];
@@ -256,10 +258,9 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
                                     $gawhere[]=['goodsid','=',$param['goodid']];
                                     $gawhere[]=['attribute','like',"%".$v['name']."%"];
                                     $gattrM=new Goodattr();
-                                    $fattr=$gattrM->getItem($gawhere);
-                                    $timep[$value['id']][$v['id']]=$fattr;
+                                    $fattr=$gattrM->getList($gawhere);
                                     if(!empty($fattr['result'])){
-                                        array_push($itemprice,$timep);
+//                                        $classinfo['attrlist'][$v['id']][$value['id']]=$fattr['result'];
                                         array_push($temp,$v);
                                     }
                                 }
@@ -267,20 +268,19 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
                                     $temp1=array();
                                     $temp1['name']=$value['name'];
                                     $temp1['data']=$temp;
-//                                $attrlist['result']['data']['specsname']=$value['name'];
-//                                array_push($item,$attrlist['result']['data']);
                                     array_push($item,$temp1);
                                 }
                             }
                         }
                     }
+//                    foreach ($item as $key=>$value){
+//                        $item[$key]=$value['data'];
+//                    }
+//                    $res=$this->combination($item);
+////                    print_r($res);
+//                    print_r($res);
 //                    exit;
-//                    print_r($this->myFormatAttr($item,count($item)-1));
-//                    exit;
-//                    $item=$this->combination($item);
-//                    $back=$this->FormatAttr($item);
-//                    print_r($item);
-//                    exit;
+//                    $classinfo['attrlist']=$itemprice;
                     $classinfo['result']['attr']=$item;
                     return rjData($classinfo);
                 }else{
@@ -351,5 +351,54 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
             array_push($result, $item);
         }
         return $result;
+    }
+    /**
+     * 获取宣传图片 只生成二维码图片不生成宣传图片
+     * /app/admin/Tb.v1.Goodss.GetPublicityImg
+     * goodid 商品id
+     * bannerid  轮播图id
+     */
+    public function GetPublicityImg(){
+        $param=$this->param;
+        if(array_key_exists("id",$param)&&$param['id']!=""&&array_key_exists('bannerid',$param)&&$param['bannerid']!=""){
+            $res=$this->getItemById();
+            $res=json_decode($res->getContent(),true);
+            if(!empty($res['result'])){
+                if($res['result']['id']){
+                    if($res['result']['qrcode']==""){
+                        $url="http://shuerte.hbweipai.com/home/details.html?id=".$param['id'];
+                        $res['result']['qrcode']=scerweima($url);
+                    }
+                    $modelM=new Model();
+                    $mwhere['id']=$res['result']['modelid'];
+                    $mres=$modelM->getDataItem($mwhere);
+//                    $bannerM=new Banner();
+//                    $bwhere['id']=$param['bannerid'];
+//                    $bres=$bannerM->getDataItem($bwhere);
+                    $brespath="../public".$param['bannerid'];
+                    if(file_exists($brespath)){
+                        $config=json_decode($mres['result']['config'],true);
+                        if(strlen($res['result']['title'])>10){
+                            $config['text'][0]['text']=mb_substr($res['result']['title'],0,10);
+                            $config['text'][2]['text']=mb_substr($res['result']['title'],10,strlen($res['result']['title']))."...";
+                        }else{
+                            $config['text'][0]['text']=$res['result']['title']."...";
+                        }
+                        $config['text'][1]['text']="￥".$res['result']['price'];
+                        $config['image'][1]['url']=$res['result']['qrcode'];
+                        $config['image'][0]['url']=$brespath;
+                        echo createPoster($config);
+                    }else{
+                        return return_json_err("生成失败",400);
+                    }
+                }else{
+                    return return_json_err("参数错误1",400);
+                }
+            }else{
+                return return_json_err("参数错误2",400);
+            }
+        }else{
+            return return_json_err("缺少必要参数3",400);
+        }
     }
 }

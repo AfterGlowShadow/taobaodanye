@@ -12,7 +12,10 @@ return [
 	    '/app/api/Tb.v1.Goodss.getItemByIdM',
         '/app/api/Tb.v1.Goodss.getListM',
         '/app/api/Tb.v1.Goodss.GetSGood',
-        '/app/api/Tb.v1.Goodss.AttrisArray'
+        '/app/api/Tb.v1.Goodss.AttrisArray',
+        '/app/api/Tb.v1.Orders.addM',
+        '/app/api/Tb.v1.Goodss.GetPublicityImg',
+        '/app/api/Attribute.v1.Goodattrs.getItemByName'
 //		'/app/api/Trip.v1.Trips.getList',
 //		'/app/api/Trip.v1.Trips.getItemById',
 //		'/app/api/Sns.v1.Snss.getListNew',
