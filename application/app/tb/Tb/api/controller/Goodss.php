@@ -105,6 +105,7 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
             } else {
                 $res['result']['specs'] =array();
             }
+            $res['result']['price']=bcdiv($res['result']['price'],100,2);
             return rjData($res['result']);
         }else{
             return rjData("");
@@ -384,7 +385,7 @@ class Goodss extends \app\app\tb\Tb\api\controller\logic\Goodss {
                         }else{
                             $config['text'][0]['text']=$res['result']['title']."...";
                         }
-                        $config['text'][1]['text']="￥".$res['result']['price'];
+                        $config['text'][1]['text']="￥".bcdiv($res['result']['price'],100,2);
                         $config['image'][1]['url']=$res['result']['qrcode'];
                         $config['image'][0]['url']=$brespath;
                         echo createPoster($config);

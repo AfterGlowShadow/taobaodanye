@@ -228,6 +228,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             } else {
                 $res['result']['specs'] =array();
             }
+            $res['result']['price']=bcdiv($res['result']['price'],100,2);
             return rjData($res['result']);
         }else{
             return rjData("");
@@ -253,6 +254,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
         $res=parent::getList();
         $res=json_decode($res->getContent(),true);
         foreach ($res['result']['data'] as $key => $value){
+
             if($value['classify']!=""&&$value['classify']!=0){
                 $classM=new Classify();
                 $where['id']=$value['classify'];
@@ -292,6 +294,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                 }
             }
             $res['result']['data'][$key]['create_time']=date("Y-m-d H:i:s",$value['create_time']);
+            $res['result']['data'][$key]['price']=bcdiv($value['price'],100,2);
         }
         return return_json($res);
     }
@@ -328,6 +331,8 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
             $res=$GoodM->getDataItem($gwhere);
             if(empty($res['result'])){
                 $this->startTrans();
+                $param['price']=bcmul($param['price'],100,0);
+                $this->param=$param;
                 $re=parent::edit();
                 $re=json_decode($re->getContent(),true);
                 if($re['msg']=="ok"){
@@ -564,7 +569,7 @@ class Goodss extends \app\app\tb\Tb\admin\controller\logic\Goodss {
                         }else{
                             $config['text'][0]['text']=$res['result']['title']."...";
                         }
-                        $config['text'][1]['text']="￥".$res['result']['price'];
+                        $config['text'][1]['text']="￥".bcdiv($res['result']['price'],100,2);
                         $config['image'][1]['url']=$res['result']['qrcode'];
                         $config['image'][0]['url']=$brespath;
                         echo createPoster($config);
